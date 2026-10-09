@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026 순장학교 운영매뉴얼 v4.1.1</title>
+<!-- [앱화] PWA 설정: 홈 화면 설치·아이콘·상태표시줄 색 -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#173858">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="순장학교">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16273A;--navy:#173858;--blue:#2F6299;--sky:#EAF2FA;
+  --bg:#F3F6F9;--paper:#FFFFFF;--line:#D9E2EC;--soft:#EEF2F6;--muted:#5B6B7C;
+  --red:#A73737;--red-bg:#FBE3E1;--amber:#A8700F;--amber-bg:#FFF1CC;--green:#36794C;--green-bg:#E1F1E5;
+  --focus:#2F6299;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#E6EDF5;--navy:#8FB6DE;--blue:#7FA9D6;--sky:#1B2B3D;--bg:#0F1720;--paper:#16212D;--line:#2A3A4C;--soft:#1C2A38;--muted:#9AAABB;
+  --red:#E58A84;--red-bg:#3A1E1D;--amber:#E2B458;--amber-bg:#352A12;--green:#7CC393;--green-bg:#16301F;--focus:#8FB6DE}}
+:root[data-theme="dark"]{--ink:#E6EDF5;--navy:#8FB6DE;--blue:#7FA9D6;--sky:#1B2B3D;--bg:#0F1720;--paper:#16212D;--line:#2A3A4C;--soft:#1C2A38;--muted:#9AAABB;
+  --red:#E58A84;--red-bg:#3A1E1D;--amber:#E2B458;--amber-bg:#352A12;--green:#7CC393;--green-bg:#16301F;--focus:#8FB6DE}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 18px}
+
+.top{background:#173858;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 22px;padding-top:16px;padding-bottom:14px}
+.brand{flex:1 1 260px}
+.brand small{display:block;font-size:12px;opacity:.72}
+.brand h1{margin:2px 0 0;font-size:21px;font-weight:700;letter-spacing:-.01em}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.ctl label{display:flex;flex-direction:column;font-size:11px;gap:4px;color:#d5e3f0}
+.ctl select,.ctl input{background:#224A70;border:1px solid #3B6690;color:#fff;border-radius:8px;padding:6px 9px;color-scheme:dark}
+.ctl .row{display:flex;gap:6px}
+.tbtn{background:transparent;border:1px solid #3B6690;color:#dfeaf5;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:600}
+.env{display:flex;border:1px solid #3B6690;border-radius:8px;overflow:hidden}
+.env button{background:transparent;border:0;color:#cfe0f0;padding:6px 11px;cursor:pointer;font-weight:600;font-size:12px}
+.env button[aria-pressed="true"]{background:#fff;color:#173858}
+.env button.prod[aria-pressed="true"]{background:#F6D7D3;color:#7A1F1F}
+
+.cycle{background:var(--paper);border-bottom:1px solid var(--line)}
+.cycle .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding-top:10px;padding-bottom:10px}
+.now{font-size:15px;font-weight:700}
+.now small{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+.stepper{display:flex;gap:2px;flex-wrap:wrap}
+.stepper span{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--soft);color:var(--muted)}
+.stepper span.past{background:var(--sky);color:var(--blue)}
+.stepper span.cur{background:#173858;color:#fff}
+.weeks{display:flex;gap:3px;align-items:center;margin-left:auto;font-size:12px;color:var(--muted)}
+.weeks i{width:16px;height:6px;border-radius:3px;background:var(--line);display:block}
+.weeks i.done{background:var(--blue)} .weeks i.nx{background:var(--navy);height:10px}
+
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:11px 13px 9px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--navy)}
+nav.tabs .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--red-bg);color:var(--red);font-size:11px;text-align:center}
+
+main{padding:18px 0 60px}
+section.view{display:none} section.view.on{display:block}
+.head{border-left:4px solid var(--navy);background:var(--paper);padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:16px}
+.head p{margin:0;font-size:17px;font-weight:600;line-height:1.5;max-width:78ch}
+.head .why{margin-top:5px;font-size:13px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.kpi{background:var(--paper);padding:13px 15px}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:25px;font-weight:700;line-height:1.2;margin-top:3px;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:13px;font-weight:500;color:var(--muted);margin-left:3px}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--soft);margin-top:7px}
+.bar span{display:block;height:100%}
+.g2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px}
+.g2e{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:16px}
+.box h2{font-size:15px;margin:0 0 3px;font-weight:700}
+.box h3{font-size:13px;margin:14px 0 6px;color:var(--muted);font-weight:600}
+.box .sub{font-size:12px;color:var(--muted);margin:0 0 12px}
+.boxhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+
+/* tasks */
+.task{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:start;padding:9px 0;border-bottom:1px solid var(--soft)}
+.task:last-child{border-bottom:0}
+.cb{width:22px;height:22px;border:2px solid var(--line);border-radius:6px;background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-size:13px;font-weight:700;color:#fff}
+.cb.on{background:var(--green);border-color:var(--green)}
+.cb[disabled]{cursor:default;opacity:.6}
+.task .tt{font-weight:600}
+.task.done .tt{text-decoration:line-through;color:var(--muted)}
+.task .mt{font-size:12px;color:var(--muted)}
+.task .rt{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.st.due{background:var(--sky);color:var(--navy)} .st.over{background:var(--red-bg);color:var(--red)}
+.st.up{background:var(--soft);color:var(--muted)} .st.ok{background:var(--green-bg);color:var(--green)}
+.st.auto{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.Red{background:var(--red-bg);color:var(--red)} .Yellow{background:var(--amber-bg);color:var(--amber)} .Green{background:var(--green-bg);color:var(--green)} .None{background:var(--soft);color:var(--muted)}
+.fLikely{background:var(--sky);color:var(--navy)} .fOnTrack{background:var(--soft);color:var(--ink)} .fAtRisk{background:var(--amber-bg);color:var(--amber)} .fNeeds{background:var(--red-bg);color:var(--red)} .fReview{background:var(--red);color:#fff}
+.btn{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600}
+.btn:hover{border-color:var(--blue)}
+.btn.pri{background:#173858;border-color:#173858;color:#fff}
+.btn.warn{border-color:var(--red);color:var(--red)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--blue);font-weight:600;cursor:pointer;font-size:12px;text-decoration:underline;text-underline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;font-weight:600;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--paper)}
+.empty{font-size:13px;color:var(--muted);padding:12px 2px}
+.muted{color:var(--muted);font-size:12px}
+
+.dec{list-style:none;margin:0;padding:0;counter-reset:d}
+.dec li{counter-increment:d;display:grid;grid-template-columns:24px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid var(--soft)}
+.dec li:last-child{border-bottom:0}
+.dec li::before{content:counter(d);width:22px;height:22px;border-radius:50%;background:var(--sky);color:var(--navy);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.dec li.p1::before{background:var(--red-bg);color:var(--red)}
+.dec b{display:block;font-size:13px} .dec span{font-size:12px;color:var(--muted)}
+
+/* map */
+.map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.tbl svg{width:100%;max-width:168px;height:auto;display:block;margin:0 auto}
+.tbl.dim{opacity:.28}
+.seat{cursor:pointer}.seat:focus{outline:none}.seat:focus-visible circle.s{stroke:var(--focus);stroke-width:3.5}
+.legend{display:flex;flex-wrap:wrap;gap:5px 14px;font-size:12px;color:var(--muted);margin-top:10px;border-top:1px solid var(--soft);padding-top:9px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid var(--line)}
+.ring{width:12px;height:12px;border-radius:50%;display:inline-block;background:var(--paper)}
+.person{border-top:1px solid var(--soft);margin-top:12px;padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px;margin:8px 0}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* tables */
+.tscroll{overflow-x:auto}
+table.dt{width:100%;border-collapse:collapse;font-size:13px}
+.dt th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;border-bottom:1px solid var(--line);padding:7px 8px;white-space:nowrap;vertical-align:bottom}
+.dt td{border-bottom:1px solid var(--soft);padding:7px 8px;vertical-align:middle}
+.dt tr.cur td{background:var(--sky)}
+.dt tr.past td{color:var(--muted)}
+.dt input[type=text],.dt input[type=date],.dt select,.dt input[type=number]{border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--paper);max-width:100%}
+.dt input[type=text]{width:120px}
+.dt .c{text-align:center}
+.sq{width:24px;height:24px;border-radius:5px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:11px;font-weight:700;padding:0;color:var(--muted)}
+.sq.s1{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+.sq.s2{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.sq.s3{background:var(--soft);color:var(--muted);border-style:dashed}
+.sq[disabled]{cursor:default}
+.hm{display:inline-flex;width:24px;height:22px;border-radius:4px;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.hm.P{background:var(--green-bg);color:var(--green)} .hm.L{background:var(--sky);color:var(--blue)} .hm.A{background:var(--red-bg);color:var(--red)} .hm.E{background:var(--soft);color:var(--muted)} .hm.n{background:transparent;color:var(--line)}
+.hm.sY{box-shadow:inset 0 0 0 2px var(--amber)} .hm.sR{box-shadow:inset 0 0 0 2px var(--red)}
+.cnt{display:inline-flex;align-items:center;gap:4px}
+.cnt button{width:20px;height:20px;border:1px solid var(--line);background:var(--paper);border-radius:4px;cursor:pointer;padding:0;font-size:12px;line-height:1}
+.met{color:var(--green);font-weight:700}.short{color:var(--amber);font-weight:700}
+
+/* kanban */
+.kan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.col{background:var(--soft);border-radius:10px;padding:10px;min-height:110px}
+.col h3{font-size:13px;margin:2px 4px 10px;display:flex;justify-content:space-between;color:var(--ink)}
+.card{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:8px}
+.card.Red{border-left-color:var(--red)}.card.Yellow{border-left-color:var(--amber)}.card.Green{border-left-color:var(--green)}
+.card .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card .m{font-size:12px;color:var(--muted);margin:3px 0 6px}
+.card .a{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.mask{font-size:12px;color:var(--muted);background:repeating-linear-gradient(135deg,var(--soft) 0 6px,transparent 6px 12px);border-radius:6px;padding:4px 8px}
+
+/* form */
+.form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px 14px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.form .w2{grid-column:span 2}.form .w4{grid-column:1/-1}
+.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:8px;padding:8px 9px;background:var(--paper);color:var(--ink);font-weight:400}
+.form textarea{min-height:56px;resize:vertical}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;border:0;background:var(--paper);padding:8px 3px;cursor:pointer;font-weight:600;font-size:12px;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--sky);color:var(--navy)}
+.seg button[aria-pressed="true"].g{background:var(--green-bg);color:var(--green)}
+.seg button[aria-pressed="true"].y{background:var(--amber-bg);color:var(--amber)}
+.seg button[aria-pressed="true"].r{background:var(--red-bg);color:var(--red)}
+.note{font-size:12px;background:var(--amber-bg);color:var(--amber);padding:8px 12px;border-radius:8px;margin-bottom:12px}
+
+/* dday */
+.ros{display:grid;grid-template-columns:110px 44px 1fr;gap:0;font-size:13px}
+.ros div{padding:6px 8px;border-bottom:1px solid var(--soft)}
+.ros .tm{font-variant-numeric:tabular-nums;color:var(--muted)}
+.ros .mn{color:var(--muted);text-align:right}
+.ros .pre{color:var(--muted)}
+.ddi{display:grid;grid-template-columns:60px 26px 1fr;gap:8px 10px;padding:8px 0;border-bottom:1px solid var(--soft);align-items:start}
+.ddi .tp{font-weight:700;font-size:12px;color:var(--navy)} .ddi .tp small{display:block;font-weight:400;color:var(--muted)}
+.ddi .issue{grid-column:3;display:flex;gap:6px}
+.ddi .issue input{flex:1;border:1px solid var(--line);border-radius:6px;padding:4px 7px;background:var(--paper);font-size:12px;min-width:0}
+.debrief{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.debrief label{font-size:12px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.debrief textarea{border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-height:54px;background:var(--paper);resize:vertical}
+
+/* calendar */
+.gantt{position:relative;font-size:12px}
+.grow{display:grid;grid-template-columns:170px 1fr;align-items:center;min-height:28px;border-bottom:1px solid var(--soft)}
+.grow .gl{padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grow .gl small{color:var(--muted);margin-right:5px}
+.gtrack{position:relative;height:28px}
+.gbar{position:absolute;top:8px;height:12px;border-radius:3px;background:var(--blue);min-width:5px}
+.gbar.Done{background:var(--green)}.gbar.Over{background:var(--red)}.gbar.Hold{background:var(--muted)}.gbar.Not{background:var(--line)}
+.gtoday{position:absolute;top:0;bottom:0;width:2px;background:var(--red);z-index:2}
+.gaxis{position:relative;height:20px;margin-left:170px;color:var(--muted);font-size:11px}
+.gaxis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.pchk{display:grid;grid-template-columns:24px 1fr auto;gap:8px;padding:6px 0;border-bottom:1px solid var(--soft);font-size:13px;align-items:center}
+.pchk input{width:17px;height:17px;accent-color:#173858;margin:0}
+
+/* templates / modal */
+.tpl{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.tpl .th{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tpl p{margin:6px 0 0;font-size:12px;color:var(--muted);white-space:pre-wrap}
+.ovl{position:fixed;inset:0;background:rgba(10,20,35,.45);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+.ovl.on{display:flex}
+.modal{background:var(--paper);border-radius:12px;max-width:560px;width:100%;padding:18px;border:1px solid var(--line)}
+.modal h2{margin:0 0 4px;font-size:16px}
+.modal textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--paper);margin:10px 0;resize:vertical;line-height:1.6}
+.modal .acts{display:flex;justify-content:flex-end;gap:8px}
+.set{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+.set label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.set input,.set select{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--paper);font-weight:400}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#173858;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;max-width:90vw}
+.toast.on{opacity:1}
+.foot{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* v4.1 명단 관리 · 로그인 */
+.admgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.admgrid>.box:last-child{position:sticky;top:56px}
+.admbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.admbar input[type=search],.admbar select{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--paper);min-width:0}
+.admbar input[type=search]{flex:1 1 180px}
+tr.pick{cursor:pointer} tr.pick:hover td{background:var(--soft)} tr.pick.cur td{background:var(--sky)}
+#admEd .form input:not([type=checkbox]),#admEd .form select,#admEd .form textarea{width:100%;min-width:0}
+#admEd .form label{min-width:0}
+.admfoot{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--soft)}
+.admfoot .btn{padding:8px 16px;font-size:13px}
+.form .inl{flex-direction:row;align-items:center;gap:8px}
+.form .inl input{width:18px;height:18px;accent-color:#173858}
+.wkpick{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.wkpick legend{font-size:12px;font-weight:600;color:var(--muted);padding:0 4px}
+.wkpick .wk{flex-direction:row;align-items:flex-start;gap:6px;font-weight:400;color:var(--ink);font-size:12px}
+.wkpick .wk input{margin-top:2px;accent-color:#173858}
+.wkpick small{display:block;color:var(--muted)}
+.wkline{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.wkline span{background:var(--soft);border-radius:6px;padding:5px 3px;text-align:center;font-weight:700;font-size:12px;min-width:0}
+.wkline span.on{background:var(--sky);color:var(--navy)}
+.wkline small{display:block;font-weight:400;font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.gcol{background:var(--soft);border-radius:10px;padding:10px;min-height:160px;border:2px dashed transparent}
+.gcol.target{border-color:var(--line);cursor:pointer}.gcol.over{border-color:var(--blue);background:var(--sky)}
+.gh{display:flex;flex-direction:column;margin-bottom:8px}
+.gchip{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 9px;margin-bottom:6px;cursor:grab;font-weight:600;font-size:13px}
+.gchip small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.gchip.on{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+textarea.bulk{width:100%;min-height:150px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--paper);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;resize:vertical}
+.undo{position:fixed;left:50%;bottom:calc(64px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.15);padding:8px 10px 8px 16px;border-radius:10px;font-size:13px;display:none;align-items:center;gap:12px;z-index:41}
+.undo.on{display:flex}.undo{max-width:calc(100vw - 32px)}.undo button{white-space:nowrap;flex:none}
+.login{max-width:420px;margin:40px auto}
+.login .form{grid-template-columns:1fr}
+.login .btn{padding:10px;font-size:14px}
+body.locked nav.tabs,body.locked .cycle,body.locked section.view{display:none!important}
+body.locked .ctl label{display:none!important}
+@media (max-width:960px){.admgrid{grid-template-columns:1fr}.admgrid>.box:last-child{position:static}.grp{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:960px){.g2,.g2e{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.map{grid-template-columns:repeat(3,minmax(0,1fr))}.kan{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.set{grid-template-columns:1fr 1fr}.grow{grid-template-columns:120px 1fr}.gaxis{margin-left:120px}}
+@media (max-width:560px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}.form,.set,.debrief{grid-template-columns:1fr}.form .w2{grid-column:auto}.head p{font-size:15px}.weeks{margin-left:0}.ros{grid-template-columns:92px 36px 1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><small>온누리교회 순장사관학교 · ERP LITE v4.1.1</small><h1>2026 순장학교 운영매뉴얼 대시보드</h1></div>
+  <div class="ctl">
+    <label>기준일 (날짜가 할 일을 결정)
+      <div class="row"><input type="date" id="tDate" aria-label="기준일"><button class="tbtn" type="button" id="tToday">오늘</button>
+      <select id="tJump" aria-label="시점 바로가기"><option value="">시점 이동…</option></select></div>
+    </label>
+    <label>데이터
+      <div class="env" role="group" aria-label="데이터 환경"><button type="button" data-env="QA">QA 샘플</button><button type="button" class="prod" data-env="PROD">실운영</button></div>
+    </label>
+    <label for="roleSel">접속 계정<select id="roleSel"></select></label>
+    <span id="who" class="tbtn" style="display:none;cursor:default"></span><button class="tbtn" type="button" id="logoutBtn" style="display:none">로그아웃</button>
+  </div>
+</div></header>
+<div class="cycle"><div class="wrap" id="cycleBar"></div></div>
+<nav class="tabs" aria-label="화면"><div class="wrap" id="tabBar" role="tablist"></div></nav>
+
+<main class="wrap">
+<section class="view" id="v-today">
+  <div class="head" id="todayHead"></div>
+  <div class="g2">
+    <div>
+      <div class="box"><div class="boxhd"><div><h2 id="cycTitle">이번 주 운영 사이클</h2><p class="sub" id="cycSub"></p></div><div id="mineToggle"></div></div><div id="cycTasks"></div></div>
+    </div>
+    <div>
+      <div class="box"><h2>기수 마일스톤</h2><p class="sub">M-2 ~ D+90 마스터캘린더에서 기준일 전후 7일 안에 걸린 단계만 보여줍니다.</p><div id="msTasks"></div></div>
+      <div class="box"><h2>지연된 일</h2><p class="sub">기한이 지났는데 체크되지 않은 항목입니다.</p><div id="overTasks"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-home">
+  <div class="head" id="homeHead"></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="g2">
+    <div>
+      <div class="box"><h2>Table 좌석 맵</h2><p class="sub">좌석 색 = 최근 Care 신호, 테두리 = 수료 전망. 좌석을 누르면 요약이 열립니다.</p>
+        <div class="map" id="map"></div>
+        <div class="legend"><span><i class="sw" style="background:var(--paper)"></i>입력 전</span><span><i class="sw" style="background:var(--green-bg)"></i>Green</span><span><i class="sw" style="background:var(--amber-bg)"></i>Yellow</span><span><i class="sw" style="background:var(--red-bg)"></i>Red</span>
+          <span><i class="ring" style="border:2px solid var(--navy)"></i>Likely</span><span><i class="ring" style="border:1.5px solid var(--muted)"></i>On Track</span><span><i class="ring" style="border:2px dashed var(--amber)"></i>At Risk</span><span><i class="ring" style="border:2px dashed var(--red)"></i>Needs Action</span><span><i class="ring" style="border:3px double var(--red)"></i>교역자 Review</span></div>
+        <div id="person"></div></div>
+    </div>
+    <div>
+      <div class="box"><h2>이번 주 결정할 일</h2><p class="sub">지연 업무·Care·수료·강사 데이터에서 자동 생성합니다.</p><ol class="dec" id="decisions"></ol></div>
+      <div class="box"><h2 id="wkTitle">다음 교육</h2><div id="wkInfo"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-board">
+  <div class="head" id="boardHead"></div>
+  <div class="box"><div class="boxhd"><div><h2>10주 운영 Board</h2><p class="sub">강사는 「명단 관리 › 강사」 목록에서 고르고, 주제·대표기도는 이 표에서 입력합니다. 준비물 칸을 누르면 미완료 → 진행중 → 완료 → 해당없음 순으로 바뀝니다.</p></div><button class="btn" data-act="recalcDates" id="recalcBtn">개강일 기준 날짜 재계산</button></div>
+  <div class="tscroll"><table class="dt" id="board"></table></div></div>
+</section>
+
+<section class="view" id="v-dday">
+  <div class="head" id="ddHead"></div>
+  <div class="chips" id="ddWeeks"></div>
+  <div class="g2">
+    <div class="box"><div class="boxhd"><div><h2 id="ddTitle">D-Day 체크</h2><p class="sub" id="ddSub"></p></div><svg id="ddRing" width="74" height="74" viewBox="0 0 96 96" aria-hidden="true"></svg></div><div id="ddList"></div></div>
+    <div>
+      <div class="box"><h2>Run-of-Show</h2><p class="sub">큐시트 기준. v3의 OT·강의 시간 중첩(15:45)을 16:00 시작으로 보정했습니다.</p><div class="ros" id="ros"></div></div>
+      <div class="box"><h2>Debrief (T+20)</h2><p class="sub">Keep / Problem / Care / Next를 남기면 다음 주 D-7 회의 자료가 됩니다.</p><div class="debrief" id="debrief"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-care">
+  <div class="head" id="careHead"></div>
+  <div class="chips" id="careFilter"></div>
+  <div class="kan" id="kanban"></div>
+  <div class="box" id="inputBox" style="margin-top:16px"><h2>주간 Care 입력 (TL_Weekly_Form)</h2><p class="sub">교육 종료 후 3분 안에 입력합니다. 저장하면 Care 큐·결석 집계·수료 전망이 함께 갱신됩니다.</p>
+    <div class="note">상담 내용은 적지 않습니다. 비고에는 연락·후속조치에 필요한 최소정보만 남깁니다.</div><form class="form" id="careForm" novalidate></form></div>
+  <div class="box"><h2>출석·신호 현황</h2><p class="sub">P 출석 · L 지각 · A 결석 · E 사유결석. 테두리 색은 그 주 Care 신호입니다.</p><div class="tscroll"><table class="dt" id="heat"></table></div></div>
+</section>
+
+<section class="view" id="v-grad">
+  <div class="head" id="gradHead"></div>
+  <div class="box"><div class="boxhd"><div><h2>수료 전망 분포</h2><p class="sub" id="critTxt"></p></div></div><div id="gradDist"></div></div>
+  <div class="box"><div class="chips" id="gradFilter"></div><div class="tscroll"><table class="dt" id="gradTable"></table></div></div>
+</section>
+
+<section class="view" id="v-cal">
+  <div class="head" id="calHead"></div>
+  <div class="box"><h2>End-to-End 기수 캘린더</h2><p class="sub">개강일과 9주차 수료예배일을 기준으로 13단계 일정을 자동 계산합니다. 빨간 선은 기준일입니다.</p><div class="tscroll"><div id="gantt" style="min-width:640px"></div></div></div>
+  <div class="g2e">
+    <div class="box"><h2>마일스톤 상태</h2><div class="tscroll"><table class="dt" id="msTable"></table></div></div>
+    <div>
+      <div class="box"><h2>개강 준비 체크리스트</h2><div id="prepList"></div></div>
+      <div class="box"><h2>예산·집행</h2><div class="tscroll"><table class="dt" id="budget"></table></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-admin">
+  <div class="head" id="admHead"></div>
+  <div class="chips" id="admSub"></div>
+  <div id="admBody"></div>
+</section>
+
+<section class="view" id="v-manual">
+  <div class="head" id="manHead"></div>
+  <div class="g2e">
+    <div>
+      <div class="box"><h2>주간 운영 표준 사이클</h2><p class="sub">매주 같은 순서로 돌면 매뉴얼을 따로 볼 필요가 없습니다.</p><div class="tscroll"><table class="dt" id="cycleStd"></table></div></div>
+      <div class="box"><h2>Care 신호 기준</h2><div class="tscroll"><table class="dt" id="careRule"></table></div></div>
+      <div class="box"><h2>역할 분담</h2><div class="tscroll"><table class="dt" id="duties"></table></div></div>
+    </div>
+    <div>
+      <div class="box"><h2>문구 템플릿</h2><p class="sub">버튼을 누르면 다음 교육 주차의 날짜·주제·장소가 채워진 문구가 열립니다.</p><div id="tplLib"></div></div>
+      <div class="box"><h2>운영진과 팀 배정</h2><p class="sub">연락처는 개인정보 보호를 위해 이 화면에 두지 않습니다.</p><div id="staff"></div></div>
+    </div>
+  </div>
+  <div class="box" id="setBox"><h2>설정</h2><p class="sub">수료 기준은 운영 참고값입니다. 공식 판정은 담당교역자·내부 기준이 우선합니다.</p><div class="set" id="settings"></div></div>
+  <div class="box"><h2>v3.0 → v4 보정 내역</h2><div class="tscroll"><table class="dt" id="fixlog"></table></div></div>
+  <div class="box"><h2>Audit Log</h2><div class="tscroll"><table class="dt" id="audit"></table></div></div>
+  <div class="foot"><span id="footNote">입력·체크 내용은 이 브라우저에만 저장됩니다. QA 샘플의 교육생·출석·과제는 가상 데이터입니다.</span><button class="btn warn" data-act="resetAll" id="resetBtn">전체 초기화</button></div>
+</section>
+</main>
+
+<div class="ovl" id="ovl" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="modal"><h2 id="mTitle"></h2><div class="muted" id="mSub"></div><textarea id="mText" aria-label="문구"></textarea><div class="acts"><button class="btn" data-act="closeModal">닫기</button><button class="btn pri" data-act="copyModal">복사</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="undo" id="undo" role="status"><span></span><button class="btn" type="button">되돌리기</button></div>
+
+<script>
+/* ================= MASTER (ERP LITE v3.0 원문 기반) ================= */
+const TOPICS=["오리엔테이션·개강예배 및 온누리교회 목회철학","역동적인 순장","순예배의 도전과 균형","순예배의 인도와 실제","순예배 인도를 위한 키워드","선교하는 순","순원 돌봄의 키워드","성령충만한 순","순장의 사명(수료예배)","아웃팅"];
+const SP25=["","","","","","","","","",""]; // '25 강사 참고명단 — 공개 저장소에는 실명을 두지 않음
+const PREP=["강의자료","찬양자료","교재","출석부","과제체크","간식","OT/광고"];
+const PSTAT=["미완료","진행중","완료","해당없음"];
+const TABLES=["T1","T2","T3","T4","T5"];
+const ROLES=[
+ {name:"담당교역자(샘플)",role:"Pastor",table:"ALL"},{name:"팀장(샘플)",role:"TeamLeader",table:"ALL"},{name:"총무(샘플)",role:"Secretary",table:"ALL"},
+ {name:"김리더(샘플)",role:"TableLeader",table:"T1"},{name:"이리더(샘플)",role:"TableLeader",table:"T2"},{name:"박리더(샘플)",role:"TableLeader",table:"T3"},
+ {name:"최리더(샘플)",role:"TableLeader",table:"T4"},{name:"정리더(샘플)",role:"TableLeader",table:"T5"}];
+const ROLE_KO={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자"};
+const OWNER_KEY={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자"};
+const PERM={
+ TeamLeader:{tabs:["today","home","board","dday","care","grad","cal","admin","manual"],task:true,board:true,dday:true,careEdit:true,input:true,assign:true,official:true,cal:true,cfg:true,tEdit:true,spEdit:true,stEdit:true,bulk:true},
+ Secretary:{tabs:["today","home","board","dday","care","grad","cal","admin","manual"],task:true,board:true,dday:true,careMask:true,assign:true,cal:true,tEdit:true,spEdit:true,bulk:true},
+ TableLeader:{tabs:["today","home","care","grad","admin","manual"],taskOwn:true,input:true,careTL:true,tNote:true},
+ Pastor:{tabs:["today","home","care","grad","cal","admin","manual"],careEdit:true,official:true,spEdit:true}};
+const TAB_LABEL={today:"오늘 할 일",home:"운영 현황",board:"주차 Board",dday:"D-Day 진행",care:"Care",grad:"수료 관리",cal:"기수 캘린더",admin:"명단 관리",manual:"매뉴얼"};
+
+/* 주간 사이클 (Reminder_Center + Reminder_문구 + 현장체크리스트 D+1/D+2) */
+const CYCLE=[
+ {id:"d7a",st:"D-7",off:-7,end:-4,t:"주간 운영회의: 강사·목표·명단·Risk Top 3 확인",o:"팀장",tpl:"rm_d7"},
+ {id:"d7b",st:"D-7",off:-7,end:-4,t:"강사 D-7 Reminder 발송 (일시·장소·인원·PPT 마감)",o:"교육팀",tpl:"sp_d7"},
+ {id:"d7c",st:"D-7",off:-7,end:-4,t:"명단·결석자·Care 현황 확인",o:"학사팀"},
+ {id:"d3a",st:"D-3",off:-3,end:-2,t:"강사 PPT 수령 (Board PPT = Final이면 자동 완료)",o:"교육팀",auto:"ppt"},
+ {id:"d3b",st:"D-3",off:-3,end:-2,t:"교재·출석부·과제체크·명찰 준비",o:"학사팀"},
+ {id:"d3c",st:"D-3",off:-3,end:-2,t:"AV·찬양 자료·마이크 2대 점검",o:"AV"},
+ {id:"d3d",st:"D-3",off:-3,end:-2,t:"다과 수량 확정",o:"섬김팀"},
+ {id:"d3e",st:"D-3",off:-3,end:-2,t:"기능팀 Final 점검 공지 (미완료 Owner·완료시간)",o:"총무",tpl:"rm_d3"},
+ {id:"d1a",st:"D-1",off:-1,end:-1,t:"교육생 주차 안내 발송 (1주차는 Welcome)",o:"총무",tpl:"rm_d1t"},
+ {id:"d1b",st:"D-1",off:-1,end:-1,t:"Staff D-1 안내 (집결·역할·Staff Prayer)",o:"총무",tpl:"rm_d1s"},
+ {id:"d0a",st:"D-Day",off:0,end:0,t:"Run-of-Show 실행 · Debrief 기록 (D-Day 체크 전체 완료 시 자동)",o:"전체",auto:"dday"},
+ {id:"p1a",st:"D+1",off:1,end:1,t:"출석·과제·Care·예산 Update",o:"총무"},
+ {id:"p1b",st:"D+1",off:1,end:1,t:"강사 감사 인사",o:"교육팀",tpl:"rm_p1s"},
+ {id:"p1c",st:"D+1",off:1,end:1,t:"교육생 감사·적용과제 안내",o:"총무",tpl:"rm_p1t"},
+ {id:"p2a",st:"D+2",off:2,end:3,t:"Yellow/Red·결석자 개별 연락",o:"테이블리더",tpl:"absent"},
+ {id:"p2b",st:"D+2",off:2,end:3,t:"Red Care 교역자 연결 확인",o:"팀장"}];
+const STAGES=["D-7","D-3","D-1","D-Day","D+1","D+2"];
+
+/* 마스터캘린더 13단계: base O=개강일, G=수료예배(9주차) */
+const MS=[
+ {id:"m1",ph:"기획",k:"M-2",b:"O",s:-61,e:-31,t:"기수 목표·기간·예산·조직 확정",o:"담당교역자·팀장",done:"Term Mission / 조직표 / 예산가안"},
+ {id:"m2",ph:"준비",k:"M-1",b:"O",s:-30,e:-14,t:"10주 주제·강사 섭외·일정 확정",o:"교육팀·총무",done:"강사 Confirm / 장소 확정",tpl:"sp_m1"},
+ {id:"m3",ph:"모집",k:"W-4",b:"O",s:-28,e:-14,t:"모집공지·추천·신청 접수",o:"학사팀",done:"Applied 명단"},
+ {id:"m4",ph:"등록",k:"W-2",b:"O",s:-14,e:-8,t:"참가자 90% 이상 확정·조편성 초안",o:"학사팀·팀장",done:"Registered 명단 / Table 초안"},
+ {id:"m5",ph:"개강준비",k:"D-7",b:"O",s:-7,e:-4,t:"강사·교재·AV·다과·Staff 준비율 점검",o:"전체 운영진",done:"Risk Top 3 / Owner 지정"},
+ {id:"m6",ph:"개강준비",k:"D-3",b:"O",s:-3,e:-2,t:"PPT·명찰·교재·안내판·비상연락 Final",o:"총무·각팀",done:"GREEN/YELLOW/RED 확인"},
+ {id:"m7",ph:"개강준비",k:"D-1",b:"O",s:-1,e:-1,t:"교육생 Welcome / Staff 안내",o:"총무",done:"발송 완료",tpl:"welcome"},
+ {id:"m8",ph:"현장",k:"D-Day",b:"O",s:0,e:0,t:"개강: Venue·AV·다과·Registration·교육·Debrief",o:"전체 운영진",done:"큐시트 완료 / 이슈 기록"},
+ {id:"m9",ph:"정규운영",k:"Week1~10",b:"O",s:0,e:63,t:"D-7~D+2 표준 사이클 반복",o:"전체 운영진",done:"주간 Dashboard 업데이트"},
+ {id:"m10",ph:"수료",k:"D-21",b:"G",s:-21,e:-1,t:"수료 예상자·미충족 요건 사전관리",o:"학사팀·팀장",done:"Graduation Forecast"},
+ {id:"m11",ph:"수료",k:"D-Day",b:"G",s:0,e:0,t:"수료·파송·공동체 Handover",o:"담당교역자·팀장",done:"수료 명단 / 배치 정보"},
+ {id:"m12",ph:"사후",k:"D+30",b:"G",s:30,e:30,t:"공동체 배치 여부 확인",o:"팀장",done:"배치율"},
+ {id:"m13",ph:"사후",k:"D+60~90",b:"G",s:60,e:90,t:"현장 정착·코칭 Follow-up",o:"담당교역자·공동체",done:"정착 Feedback"}];
+const MSTAT=["Not Started","In Progress","Done","Hold"];
+
+/* D-Day One Page (T=15:30) */
+const DDAY=[["T-120","Venue","냉난방·좌석·단상·칠판·안내물","총무/섬김"],["T-100","Registration","출석부·명찰·교재·Table 표시","학사"],["T-90","AV","PPT·마이크·영상·찬양 Audio","AV"],["T-60","다과","생수·커피·간식·냅킨·쓰레기봉투","섬김"],["T-45","Staff","Prayer Huddle·교육생 수·특이사항·Emergency","팀장"],["T-30","Welcome","교육생 맞이·명찰·좌석 안내","전체"],["T-15","강사","진행순서·시간·마이크·요청사항","교육팀"],["T-5","Ready","전 팀 준비완료 Signal","총무"],["T","수업","출결·시간·Care 관찰","전체"],["Break","Care","소외·불편 교육생 확인·다과 보충","Table/섬김"],["종료","Closing","다음 주 일정·과제·준비물 안내","팀장/총무"],["T+20","Debrief","Keep / Problem / Care / Next","팀장"],["D+1","Data","출석·과제·Care·Budget·Issue Update","총무/학사"],["D+2","Follow-up","Yellow/Red 대상 연락·Escalation","Table/팀장"]];
+const DDCLOCK={"T-120":"13:30","T-100":"13:50","T-90":"14:00","T-60":"14:30","T-45":"14:45","T-30":"15:00","T-15":"15:15","T-5":"15:25","T":"15:30","Break":"17:00","종료":"17:20","T+20":"17:50","D+1":"월","D+2":"화"};
+
+const PREPLAN=["순장학교 프로그램 기획 (일정·강사·기도)","예산 신청","순장학교 모집 공지","운영스텝 모집·단톡방 개설","교재 제본 (인쇄소 확정)","아이스쿨 순장학교 등록 (계정정보는 별도 보관)","비품 확인 및 세탁","강사 선정 및 일정 확인","장로님 기도 일정 확인"];
+const BUDGET=["교회예산","회비","교재비","강사사례비","수료선물비","일회용품 및 기타","아웃팅비용 지원","예비비","식사비","간식비"];
+const DUTIES=[["교육준비 및 기도회","2명","테이블 배치·커버, 의자, 단상, 칠판 / 조별 표시 폴더 5개, 출석부, 명찰"],["교육준비 및 기도회","2명","PPT, 마이크 2대 확인"],["교육준비 및 기도회","3명","간식 준비"],["Welcome","모든 스텝","안내"],["찬양","2명 + 1명","찬양 인도 / PPT 화면 조정"],["기도 및 축복메시지","주별 장로님","대표기도"],["강의","강사","강의"],["휴식","모든 스텝","간식 나눔"],["조별 강의주제 나눔","조장","조장 선출, 강의주제 나눔"],["광고","팀장","다음 주 일정·과제"],["마침기도 및 축도","담당교역자",""]];
+const CARE_RULE=[["Green","정상 참여","주간 입력 유지","테이블리더"],["Yellow","반복 결석·참여 저하","D+2 개별 연락","테이블리더"],["Red","안전·심각 이슈","당일 교역자 연결","팀장 → 담당교역자"],["Needs Action","수료요건 미충족","보완계획 수립","학사팀·팀장"],["Likely","참고기준 충족","최종 판정 준비","팀장"]];
+const FIX=[
+ ["치명","교육일","2026 날짜가 2025 serial(월요일)로 남아 있음","개강 2026-10-18(일) 기준 10주 연속 일요일 자동 산출, 주차별 수정·재계산 지원"],
+ ["치명","수료예측","빈 명단 50행이 재계산 시 Needs Action으로 집계","등록상태 Registered·Active 교육생만 판정"],
+ ["치명","Care KPI","TL Form + Care 합산, 주차 누적으로 이중 집계","교육생별 최신 주간 신호 1개 기준"],
+ ["높음","Care 원천","명단 J·Care E·TL Form I 3곳","주간 Care 입력 1곳 → Care 큐·수료 전망 자동 연동"],
+ ["높음","Reminder","'완료' = 날짜 경과일 뿐 실행 여부 아님","예정·진행·지연·완료 4상태, 실행 체크 분리"],
+ ["높음","개인정보","명단 시트에 2025 입금계좌·연락처 잔존","대시보드에 연락처·계좌 미보관"],
+ ["중간","주제·강사","프로그램·주차운영·강사관리 3중 입력, 10주차 누락","주차 Board 1곳, 10주 모두 관리"],
+ ["중간","D-Day","체크리스트 3종 중복, 주차별 초기화 없음","D-Day_1Page 14항목 표준, 주차별 기록"],
+ ["중간","큐시트","OT와 강의 15:45 중첩","OT 15:45~16:00, 강의 16:00~17:00 (1주차)"],
+ ["중간","결석","TL 결석이 과제체크 결석으로 연결되지 않음","주간 입력 Absent 자동 집계 (Excused 산입 여부 설정)"],
+ ["중간","현재주차","설정 시트 수동 입력(1)","기준일로 자동 판정"]];
+
+/* 문구 템플릿: {주차}{날짜}{주제}{강사}{장소}{시간}{기수}{PPT마감}{집결} */
+const TPL={
+ welcome:{n:"교육생 D-1 Welcome (개강)",x:"[{기수} 개강 안내]\n안녕하세요. 내일 순장학교에서 뵙겠습니다.\n일시: {날짜} {시간}\n장소: {장소}\n도착 권장: 시작 15분 전\n준비물: 성경·교재·필기도구\n기도하는 마음으로 뵙겠습니다."},
+ rm_d1t:{n:"교육생 D-1 주차 안내",x:"[{기수} / Week {주차} 안내]\n내일 뵙겠습니다.\n일시: {날짜} {시간}\n장소: {장소}\n주제: {주제}\n강사: {강사}\n준비물: 성경·필기도구\n도착 권장: 시작 15분 전. 기도하는 마음으로 뵙겠습니다."},
+ rm_d1s:{n:"Staff D-1 안내",x:"[운영 Staff D-1] 내일 집결시간은 {집결}, 장소는 {장소}입니다.\n담당 위치와 역할을 다시 확인해 주세요. AV·교재·다과·명단 Final Check 후 Staff Prayer에 참석합니다."},
+ rm_d7:{n:"Core Staff D-7",x:"[순장학교 Week {주차} D-7] 다음 주 강사/주제/교육목표를 확인합니다.\n주제: {주제} / 강사: {강사}\n① 강사 Confirm ② 명단·Care ③ 교재·AV·다과 ④ Risk Top 3를 오늘 운영회의에서 닫아 주세요."},
+ rm_d3:{n:"기능팀 D-3 Final 점검",x:"[순장학교 Week {주차} D-3] 최종 준비 점검입니다.\nPPT·공지·교재·찬양·AV·다과·출석부의 미완료 항목을 확인하고 Owner와 완료시간을 남겨 주세요."},
+ rm_p1t:{n:"교육생 D+1 감사·적용과제",x:"어제 함께해 주셔서 감사합니다. 이번 주 적용과제는 ○○입니다.\n다음 주 {다음날짜}에 다시 뵙겠습니다."},
+ rm_p1s:{n:"강사 D+1 감사",x:"귀한 강의와 섬김에 감사드립니다. 교육생과 운영진 모두에게 큰 도움이 되었습니다. 평안한 한 주 보내세요."},
+ sp_m1:{n:"강사 M-1 섭외",x:"안녕하세요. 온누리 순장학교 {주차}주차 '{주제}' 강의를 부탁드리고자 합니다.\n일시: {날짜} {시간} / 장소: {장소}\n교육생: 약 ○○명 / 강의시간: 60분 / 자료 마감: {PPT마감}"},
+ sp_d7:{n:"강사 D-7 Reminder",x:"다음 주 순장학교 강의 일정을 다시 안내드립니다.\n일시: {날짜} {시간} / 장소: {장소}\n주제: {주제} / 예상 인원: 약 ○○명\nPPT 마감: {PPT마감} / 현장 담당: 교육팀"},
+ absent:{n:"결석자 Follow-up",x:"○○님, 오늘 함께하지 못해 안부 여쭙습니다. 어려움이나 도움이 필요한 부분이 있으면 편하게 알려주세요. 다음 주 {다음날짜}에 뵙기를 기대합니다."},
+ weekly:{n:"주차별 공식공지",x:"[{기수} / Week {주차} 안내]\n일시: {날짜} {시간} / 장소: {장소}\n주제: {주제} / 강사: {강사}\n준비물: 성경·필기도구 / 과제: ○○\n문의: 운영팀"}};
+
+/* QA 샘플 교육생 (가상) */
+const SAMPLE=[["김하늘","T1"],["이서준","T1"],["박지우","T1"],["최민재","T1"],["정다은","T1"],["윤시온","T2"],["한예린","T2"],["오지훈","T2"],["강수아","T2"],["문태호","T2"],["임채원","T3"],["조현우","T3"],["백서연","T3"],["신도윤","T3"],["유나영","T3"],["장민준","T4"],["송예은","T4"],["권도현","T4"],["남지민","T4"],["홍서진","T4"],["서유진","T5"],["배현준","T5"],["노하린","T5"],["심재윤","T5"],["류지아","T5"]];
+let LEADER={T1:"김리더",T2:"이리더",T3:"박리더",T4:"최리더",T5:"정리더"};
+
+/* ================= DATE UTILS ================= */
+const DAY=864e5;
+const d2n=s=>{const[y,m,d]=s.split("-").map(Number);return Math.round(Date.UTC(y,m-1,d)/DAY);};
+const n2s=n=>new Date(n*DAY).toISOString().slice(0,10);
+const WD="일월화수목금토";
+const fmt=n=>{const d=new Date(n*DAY);return `${d.getUTCMonth()+1}/${d.getUTCDate()}(${WD[d.getUTCDay()]})`;};
+const fmtL=n=>{const d=new Date(n*DAY);return `${d.getUTCFullYear()}.${d.getUTCMonth()+1}.${d.getUTCDate()}(${WD[d.getUTCDay()]})`;};
+const todayN=()=>{const t=new Date();return Math.round(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())/DAY);};
+
+/* ================= SAMPLE GENERATOR (deterministic) ================= */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function genSample(){
+  const r=rng(20261018), entries=[], comp={};
+  SAMPLE.forEach(([name,table],i)=>{
+    for(let w=1;w<=10;w++){
+      let x=r(), att=x<.06?"Absent":x<.12?"Late":x<.15?"Excused":"Present";
+      let part=att==="Absent"?"":String(3+Math.floor(r()*3)- (r()<.12?1:0));
+      let qt=r()<.7?"정상":r()<.8?"부분":"미완료";
+      let sig="Green",cat="",act="";
+      if(w===10)att="Present";
+      if(name==="오지훈"&&[2,3,5].includes(w))att="Absent";
+      if(name==="남지민"&&[3,4].includes(w))att="Absent";
+      if(name==="강수아"&&[4,6,7].includes(w))att="Absent";
+      if(att==="Absent"){sig=["오지훈","남지민","강수아"].includes(name)?"Yellow":"Green";cat="출석";act="개별 연락 후 상황 확인";part="";}
+      if(name==="백서연"){if(w===3||w===4){sig="Red";cat="신앙";act="담당교역자 연결";}else if(w===5){sig="Yellow";cat="신앙";act="교역자 면담 후 관찰";}}
+      if(name==="한예린"&&w===6){sig="Yellow";cat="관계";act="개별 연락";}
+      entries.push({w,name,table,att,part:part||"-",qt:att==="Absent"?"-":qt,sig,cat,act,by:"샘플",sample:true});
+    }
+    const pick=(lo,hi)=>lo+Math.floor(r()*(hi-lo+1));
+    const two=()=>{const a=pick(3,6),b=pick(6,9);return r()<.16?[a]:[a,b];};
+    comp[name]={sil:two(),gong:two(),out:r()<.14?[]:[pick(5,8)],dok:r()<.1?[]:[r()<.25?9:8]};
+    if(name==="김하늘")comp[name].dok=[];
+    if(name==="문태호")comp[name].gong=[5];
+  });
+  return {entries,comp};
+}
+const SAMP=genSample();
+
+/* ================= STATE ================= */
+const GAS=typeof google!=="undefined"&&!!(google.script&&google.script.run); // Apps Script 웹앱에서 실행 중인가
+let CTX=null, pendingRender=false, syncing=0;
+const SIMQA=()=>!GAS&&S.env==="QA";
+const KEY="sunjang-ops-v41";
+function mkWeeks(open){const o=d2n(open);return TOPICS.map((t,i)=>({no:i+1,date:n2s(o+7*i),topic:t,speaker:"",speakerId:"",sp:"미섭외",ppt:"미수령",thanks:"미완료",prayer:i===0?"담당장로":"",prep:PREP.map(()=>0)}));}
+function seedEnv(env){
+  const qa=env==="QA";
+  const weeks=mkWeeks("2026-10-18");
+  const speakers=qa?[1,2,3,4].map(i=>({id:"S"+i,name:`샘플강사${i}`,title:"목사",org:"",topics:TOPICS[i-1],history:"",note:"",archived:false,ver:1})):[];
+  if(qa){weeks.forEach((w,i)=>{if(i<4){w.sp="확정";w.speaker=`샘플강사${i+1}`;w.speakerId="S"+(i+1);}else if(i<7)w.sp="섭외중";});}
+  const staff=ROLES.map((r,i)=>({email:["pastor","leader","secretary","t1","t2","t3","t4","t5"][i]+"@example.com",name:r.name.replace("(샘플)",""),role:r.role,table:r.table,team:"",active:true,ver:1})).map(s=>({...s,key:s.email}));
+  return {
+    cfg:{name:"2026 순장학교",open:"2026-10-18",venue:"비전홀",time:"15:30~17:30",crit:{sil:2,gong:2,out:1,dok:1,abs:2},excAbs:false},
+    weeks,tasks:{},ms:{},prep:qa?{0:true,1:true,2:true,3:true}:{},
+    budget:BUDGET.map(b=>({b,plan:0,spend:0,st:"미집행"})),dd:{},
+    roster:qa?SAMPLE.map(([n,t],i)=>({id:"Q"+i,name:n,orig:n,table:t,status:"Active",community:"",source:"",note:"",archived:false,ver:1})):[],
+    speakers,staff,
+    logs:[],cases:{},adj:{},official:{},teams:{"교육팀":"","학사팀":"","섬김팀":"","AV":"","찬양":""},audit:[]};
+}
+function fresh(){return {env:"QA",roleIdx:1,tab:"today",T:null,mine:null,sel:null,careF:"open",gradF:"all",ddW:null,data:{QA:seedEnv("QA"),PROD:seedEnv("PROD")}};}
+let S;try{const raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):fresh();if(!S||!S.data||!S.data.QA)S=fresh();}catch(e){S=fresh();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(GAS?{...S,data:fresh().data}:S));}catch(e){}}
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const D=()=>S.data[S.env];
+const me=()=>CTX||ROLES[S.roleIdx];
+const P=()=>PERM[me().role];
+const inScope=t=>me().table==="ALL"||t===me().table;
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2300);}
+function audit(a,d){D().audit.unshift({ts:new Date().toLocaleString("ko-KR",{hour12:false}),user:me().name,role:me().role,a,d});if(D().audit.length>200)D().audit.length=200;}
+
+/* ================= DERIVED CONTEXT ================= */
+let C;
+function compute(){
+  const d=D(), T=S.T?d2n(S.T):todayN();
+  const weeks=d.weeks.map(w=>{const n=d2n(w.date),x={...w,n,prep:[...w.prep]};
+    if(SIMQA()&&n<T&&!w.touched){x.ppt="Final";x.prep=x.prep.map((v,j)=>j===6&&w.no>1?3:2);if(n+1<T)x.thanks="완료";} // QA 샘플: 지난 주차 준비 완료 가정
+    return x;});
+  const O=weeks[0].n, G=weeks[8].n, END=weeks[9].n;
+  const elapsed=weeks.filter(w=>w.n<=T).length;               // 교육이 진행된 주차 수
+  const focal=weeks.find(w=>w.n>=T)||null;                     // 다음(또는 오늘) 교육 주차
+  const prev=[...weeks].reverse().find(w=>w.n<T)||null;
+  (d.staff||[]).filter(s=>s.role==="TableLeader"&&s.active&&s.table!=="ALL").forEach(s=>LEADER[s.table]=s.name);
+  const active=d.roster.filter(x=>!x.archived&&(x.status==="Active"||x.status==="Registered"));
+  // entries: sample(QA) + user logs (override same name+week). 샘플 기록은 원래 이름(orig)으로 연결 → 이름 변경·Table 이동 후에도 유지
+  const map={};
+  if(SIMQA()){const byOrig={};active.forEach(a=>{if(a.orig)byOrig[a.orig]=a;});SAMP.entries.forEach(e=>{const a=byOrig[e.name];if(a)map[a.name+"|"+e.w]={...e,name:a.name,table:a.table};});}
+  d.logs.forEach(e=>{map[e.name+"|"+e.w]=e;});
+  const all=Object.values(map).filter(e=>e.w<=elapsed&&active.some(a=>a.name===e.name));
+  const byName={};active.forEach(a=>byName[a.name]=[]);
+  all.forEach(e=>byName[e.name]&&byName[e.name].push(e));
+  Object.values(byName).forEach(l=>l.sort((a,b)=>a.w-b.w));
+  const cr=d.cfg.crit, remain=weeks.filter(w=>w.no<=9&&w.n>T).length;
+  const people=active.map(a=>{
+    const h=byName[a.name]||[], last=h[h.length-1];
+    const absN=h.filter(e=>e.att==="Absent"||(d.cfg.excAbs&&e.att==="Excused")).length;
+    const cp=SIMQA()?SAMP.comp[a.orig||a.name]:null, adj=d.adj[a.name]||{};
+    const cnt=k=>Math.max(0,(cp?cp[k].filter(x=>x<=elapsed).length:0)+(adj[k]||0)+(d.alog||[]).filter(x=>x.name===a.name&&x.k===k&&x.w<=elapsed).reduce((s,x)=>s+x.d,0));
+    const req={sil:[cnt("sil"),cr.sil],gong:[cnt("gong"),cr.gong],out:[cnt("out"),cr.out],dok:[cnt("dok"),cr.dok]};
+    const deficit=Object.values(req).reduce((s,[v,n])=>s+Math.max(0,n-v),0);
+    const lack=Object.entries(req).filter(([k,[v,n]])=>v<n).map(([k])=>({sil:"실습",gong:"공부",out:"아웃리치",dok:"독후감"}[k]));
+    let fc;
+    if(last&&last.sig==="Red")fc="교역자 Review";
+    else if(absN>cr.abs)fc="Needs Action";
+    else if(deficit===0&&(remain===0||absN<cr.abs))fc="Likely";
+    else if(deficit===0)fc="At Risk";
+    else if(remain===0)fc="Needs Action";
+    else if(deficit>remain*2||absN===cr.abs)fc="At Risk";
+    else fc="On Track";
+    return {...a,hist:h,last,sig:last?last.sig:"None",absN,req,deficit,lack,fc};
+  });
+  // care cases
+  const cases=[];
+  people.forEach(p=>{
+    const flagged=p.hist.filter(e=>e.sig!=="Green");
+    if(!flagged.length)return;
+    const st=d.cases[p.name]||{stage:"신규",esc:false,closedW:0};
+    const lastFlag=flagged[flagged.length-1];
+    let stage=st.stage, recovered=false;
+    if(p.sig==="Green"){stage="종결";recovered=st.stage!=="종결";}
+    else if(st.stage==="종결"&&lastFlag.w>st.closedW)stage="신규";
+    cases.push({name:p.name,table:p.table,sig:p.sig==="Green"?lastFlag.sig:p.sig,cur:p.sig,pr:(p.sig==="Red"?"P1":"P2"),cat:lastFlag.cat,act:lastFlag.act,w:lastFlag.w,stage,esc:st.esc&&stage!=="종결",recovered});
+  });
+  C={T,weeks,O,G,END,elapsed,focal,prev,people,cases,remain,active};
+  return C;
+}
+function taskStatus(w,t){
+  const d=D(), key=w.no+"|"+t.id, s=w.n+t.off, e=w.n+t.end;
+  const qaAuto=SIMQA()&&e<C.T&&!(t.id==="p1a"&&C.prev&&w.no===C.prev.no); // QA 샘플: 지난 사이클은 수행 가정(직전 주차 D+1 Update 1건만 지연 예시)
+  let done=key in d.tasks?!!d.tasks[key]:qaAuto;
+  if(t.auto==="ppt")done=w.ppt==="Final"||qaAuto;
+  if(t.auto==="dday"){const l=d.dd[w.no];done=qaAuto||!!(l&&DDAY.slice(0,12).every((x,i)=>l.it&&l.it[i]&&l.it[i].done));}
+  const st=done?"ok":C.T<s?"up":C.T>e?"over":"due";
+  return {key,s,e,done,st};
+}
+function msDates(m){const base=m.b==="O"?C.O:C.G;return {s:base+m.s,e:base+m.e};}
+function msStatus(m){const {s,e}=msDates(m);const qa=SIMQA();const st=D().ms[m.id]||(qa&&e<C.T?"Done":qa&&s<=C.T?"In Progress":"Not Started");const over=st!=="Done"&&st!=="Hold"&&C.T>e;return {st,s,e,over};}
+function stageOf(T,w){if(!w)return null;const x=T-w.n;if(x===0)return "D-Day";if(x>=-7&&x<=-4)return "D-7";if(x>=-3&&x<=-2)return "D-3";if(x===-1)return "D-1";return null;}
+
+/* ================= SHELL ================= */
+function renderShell(){
+  const sel=$("roleSel");
+  if(!sel.options.length)ROLES.forEach((r,i)=>{const o=document.createElement("option");o.value=i;o.textContent=ROLE_KO[r.role]+" · "+r.name+(r.table!=="ALL"?" ("+r.table+")":"");sel.appendChild(o);});
+  sel.value=S.roleIdx;
+  if(GAS){sel.closest("label").style.display="none";document.querySelector(".env").closest("label").style.display="none";}
+  $("tDate").value=n2s(C.T);
+  document.querySelectorAll(".env button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.env===S.env));
+  const j=$("tJump"),W=C.weeks;
+  const opts=[["",""],[n2s(C.O-7),"개강 D-7"],[n2s(C.O-1),"개강 D-1"],[n2s(C.O),"1주차 D-Day"],[n2s(W[2].n+2),"3주차 D+2"],[n2s(W[4].n-3),"5주차 D-3"],[n2s(C.G-21),"수료 D-21"],[n2s(C.G),"수료예배"],[n2s(C.END+3),"과정 종료 후"]];
+  j.innerHTML=`<option value="">시점 이동…</option>`+opts.slice(1).map(o=>`<option value="${o[0]}">${o[1]} · ${fmt(d2n(o[0]))}</option>`).join("");
+  // cycle bar
+  const f=C.focal, stg=stageOf(C.T,f);
+  let head;
+  if(C.T<C.O-7){const ms=MS.filter(m=>m.b==="O"&&m.s<=0).find(m=>{const x=msDates(m);return C.T>=x.s&&C.T<=x.e;});head=`개강 D-${C.O-C.T}<small>${ms?ms.ph+" 단계 ("+ms.k+")":"개강 준비 기간"}</small>`;}
+  else if(!f){head=`과정 종료 후 ${C.T-C.END}일<small>사후 관리 (수료 D+${C.T-C.G})</small>`;}
+  else{const post=C.prev&&C.T-C.prev.n<=3&&C.T>C.prev.n?` · ${C.prev.no}주차 D+${C.T-C.prev.n}`:"";head=`${f.no}주차 ${stg?stg:"D-"+(f.n-C.T)}<small>${fmt(f.n)} ${esc(f.topic)}${post}</small>`;}
+  const cur=stg||(C.prev&&C.T-C.prev.n>=1&&C.T-C.prev.n<=3?(C.T-C.prev.n===1?"D+1":"D+2"):null);
+  const idx=STAGES.indexOf(cur);
+  const steps=STAGES.map((s,i)=>`<span class="${i===idx?"cur":(cur&&i<idx&&stg)?"past":""}">${s}</span>`).join("");
+  let w="";C.weeks.forEach(x=>{w+=`<i class="${x.n<=C.T?"done":f&&x.no===f.no?"nx":""}" title="${x.no}주차 ${fmt(x.n)}"></i>`;});
+  $("cycleBar").innerHTML=`<span class="now">${head}</span><span class="stepper" aria-label="주간 사이클">${steps}</span><span class="muted">${fmtL(C.T)} 기준 · ${ROLE_KO[me().role]} ${esc(me().name)}${me().table!=="ALL"?" · "+me().table:""} · ${GAS?(S.env==="QA"?"QA 시트":"운영 시트")+(syncing?" · 저장 중":" · 동기화됨"):S.env==="QA"?"QA 샘플":"실운영"}</span><span class="weeks">${w}<span style="margin-left:6px">${C.elapsed}/10주 진행</span></span>`;
+  const tabs=P().tabs;if(!tabs.includes(S.tab))S.tab=tabs[0];
+  const over=countOverdue(), red=C.cases.filter(c=>c.stage!=="종결"&&c.cur==="Red"&&inScope(c.table)).length;
+  $("tabBar").innerHTML=tabs.map(t=>{let n="";if(t==="today"&&over)n=`<span class="n">${over}</span>`;if(t==="care"&&red)n=`<span class="n">${red}</span>`;
+    return `<button role="tab" data-tab="${t}" aria-selected="${S.tab===t}">${TAB_LABEL[t]}${n}</button>`;}).join("");
+  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+S.tab));
+}
+function mineOn(){return S.mine===null?["TableLeader","Pastor"].includes(me().role):S.mine;}
+function ownerMatch(o){if(!mineOn())return true;return o.includes(OWNER_KEY[me().role])||o.includes("전체");}
+function allOpenTasks(){
+  const out=[];
+  C.weeks.forEach(w=>CYCLE.forEach(t=>{const s=taskStatus(w,t);if(ownerMatch(t.o))out.push({w,t,s});}));
+  return out;
+}
+function countOverdue(){return allOpenTasks().filter(x=>x.s.st==="over").length+MS.filter(m=>msStatus(m).over&&ownerMatch(m.o)).length;}
+function render(){compute();renderShell();({today:rToday,home:rHome,board:rBoard,dday:rDday,care:rCare,grad:rGrad,cal:rCal,admin:rAdmin,manual:rManual})[S.tab]();save();}
+function go(t){if(P().tabs.includes(t)){S.tab=t;render();window.scrollTo({top:0});}}
+const canTask=t=>P().task||(P().taskOwn&&t.o.includes("테이블리더"));
+
+/* ================= TEMPLATE FILL ================= */
+function fillTpl(key,w){
+  const d=D(),f=w||C.focal||C.weeks[0],nx=C.weeks[f.no]||null;
+  const rep={"기수":d.cfg.name,"주차":f.no,"날짜":fmtL(f.n),"주제":f.topic,"강사":f.speaker||"(강사 확정 전)","장소":d.cfg.venue,"시간":d.cfg.time,"PPT마감":fmt(f.n-3),"집결":"13:30","다음날짜":nx?fmt(nx.n):"(과정 종료)"};
+  return TPL[key].x.replace(/\{(.+?)\}/g,(m,k)=>rep[k]!==undefined?rep[k]:m);
+}
+function openTpl(key,wno){const w=wno?C.weeks[wno-1]:null;$("mTitle").textContent=TPL[key].n;$("mSub").textContent=(w||C.focal)?`${(w||C.focal).no}주차 기준으로 채웠습니다. ○○ 부분은 직접 수정합니다.`:"";$("mText").value=fillTpl(key,w);$("ovl").classList.add("on");$("mText").focus();}
+
+/* ================= TODAY ================= */
+function taskRow(x,showWeek){
+  const {w,t,s}=x, ed=canTask(t)&&!t.auto;
+  const lab={ok:"완료",up:"예정",due:"진행",over:"지연"}[s.st];
+  const when=s.s===s.e?fmt(s.s):`${fmt(s.s)}~${fmt(s.e)}`;
+  return `<div class="task${s.done?" done":""}"><button class="cb${s.done?" on":""}" data-act="task" data-k="${s.key}" ${ed?"":"disabled"} aria-pressed="${s.done}" aria-label="${esc(t.t)} 완료">${s.done?"✓":""}</button>
+   <div><div class="tt">${showWeek?`<span class="muted">${w.no}주차 ${t.st} · </span>`:""}${esc(t.t)}</div><div class="mt">${esc(t.o)} · ${when}${t.auto?" · 자동 판정":""}</div></div>
+   <div class="rt"><span class="st ${s.st}">${lab}</span>${t.tpl?`<button class="link" data-act="tpl" data-k="${t.tpl}" data-w="${w.no}">문구</button>`:""}${t.auto==="dday"&&P().tabs.includes("dday")?`<button class="link" data-act="goDD" data-w="${w.no}">열기</button>`:""}</div></div>`;
+}
+function rToday(){
+  const f=C.focal, all=allOpenTasks();
+  // focal cycle: tasks of focal week (D-7..D-Day) + prev week D+1/D+2
+  const list=[];
+  if(C.prev&&C.T-C.prev.n<=4)CYCLE.filter(t=>t.off>0).forEach(t=>{if(ownerMatch(t.o))list.push({w:C.prev,t,s:taskStatus(C.prev,t)});});
+  if(f)CYCLE.filter(t=>t.off<=0).forEach(t=>{if(ownerMatch(t.o))list.push({w:f,t,s:taskStatus(f,t)});});
+  $("cycTitle").textContent=f?`${f.no}주차 운영 사이클`:"주간 사이클 종료";
+  $("cycSub").textContent=f?`${fmt(f.n)} · ${f.topic} · 강사 ${f.speaker||"미확정"} (${f.sp})`:"10주 과정이 끝났습니다. 수료·사후 마일스톤을 확인합니다.";
+  $("mineToggle").innerHTML=`<button class="chip" data-act="mine" aria-pressed="${mineOn()}">내 담당만</button>`;
+  $("cycTasks").innerHTML=list.length?STAGES.map(st=>{const g=list.filter(x=>x.t.st===st);if(!g.length)return "";const lab=g[0].t.off>0?`${st} · ${g[0].w.no}주차 후속`:st;return `<h3 style="font-size:12px;color:var(--muted);margin:12px 0 2px">${lab}</h3>`+g.map(x=>taskRow(x,false)).join("");}).join(""):`<div class="empty">표시할 항목이 없습니다. '내 담당만'을 끄면 전체가 보입니다.</div>`;
+  // milestones window
+  const ms=MS.map(m=>({m,...msStatus(m)})).filter(x=>ownerMatch(x.m.o)&&x.st!=="Done"&&x.s<=C.T+7&&x.e>=C.T-7&&x.m.id!=="m9");
+  $("msTasks").innerHTML=ms.length?ms.map(x=>`<div class="task"><span></span><div><div class="tt">${x.m.ph} ${x.m.k} · ${esc(x.m.t)}</div><div class="mt">${esc(x.m.o)} · ${fmt(x.s)}${x.s!==x.e?"~"+fmt(x.e):""} · 완료기준: ${esc(x.m.done)}</div></div>
+     <div class="rt"><span class="st ${x.over?"over":C.T<x.s?"up":"due"}">${x.over?"지연":C.T<x.s?"예정":x.st==="In Progress"?"진행 중":"착수 필요"}</span>${x.m.tpl?`<button class="link" data-act="tpl" data-k="${x.m.tpl}" data-w="1">문구</button>`:""}${P().tabs.includes("cal")?`<button class="link" data-act="go" data-t="cal">상태 변경</button>`:""}</div></div>`).join(""):`<div class="empty">기준일 전후로 걸린 마일스톤이 없습니다.</div>`;
+  const over=all.filter(x=>x.s.st==="over").sort((a,b)=>a.s.e-b.s.e);
+  const msOver=MS.filter(m=>msStatus(m).over&&ownerMatch(m.o));
+  $("overTasks").innerHTML=(over.length||msOver.length)?msOver.map(m=>`<div class="task"><span></span><div><div class="tt">${m.ph} ${m.k} · ${esc(m.t)}</div><div class="mt">${esc(m.o)} · 기한 ${fmt(msStatus(m).e)}</div></div><div class="rt"><span class="st over">지연</span></div></div>`).join("")+over.slice(0,8).map(x=>taskRow(x,true)).join("")+(over.length>8?`<div class="muted" style="padding-top:8px">외 ${over.length-8}건</div>`:""):`<div class="empty">지연된 일이 없습니다.</div>`;
+  // head
+  const due=list.filter(x=>x.s.st==="due"&&!x.s.done).length, sp=C.weeks.filter(w=>w.sp==="확정").length;
+  let m,why;
+  if(C.T<C.O-7){m=`개강 D-${C.O-C.T} → 강사 확정 ${sp}/10, 등록 ${C.active.length}명 상태입니다. 등록 마감(W-2 ${fmt(C.O-8)})과 강사 Confirm을 먼저 닫아야 합니다`;why=`지연 ${over.length+msOver.length}건 · 이번 사이클 진행 ${due}건. 개강 D-7(${fmt(C.O-7)})부터 주간 사이클이 시작됩니다.`;}
+  else if(!f){m=`10주 과정이 끝났습니다 → 수료 D+${C.T-C.G}, 공동체 배치 확인(D+30 ${fmt(C.G+30)})과 정착 Follow-up을 챙겨야 합니다`;why="사후 마일스톤만 남았습니다.";}
+  else{const st=stageOf(C.T,f)||"준비";m=`${f.no}주차 ${st} 단계, 지금 할 일 ${due}건${over.length?` · 지연 ${over.length}건`:""} → ${over.length?"지연 항목부터 닫고 ":""}${me().role==="TableLeader"?"담당 Table 결석자·Yellow 연락과 교육 직후 주간 Care 입력을 챙깁니다":me().role==="Pastor"?"Red Care와 교역자 Review 대상을 확인합니다":st==="D-Day"?"Run-of-Show 체크를 진행합니다":st==="D-1"?"교육생·Staff 안내를 오늘 발송합니다":st==="D-3"?"PPT·교재·AV·다과 Final을 닫습니다":"다음 주 강사·명단·Risk를 확인합니다"}`;why=`${fmt(f.n)} ${f.topic} · 강사 ${f.speaker||"미확정"} · 대표기도 ${f.prayer||"미정"}`;}
+  $("todayHead").innerHTML=`<p>${esc(m)}</p><div class="why">${esc(why)}</div>`;
+}
+
+/* ================= HOME ================= */
+const FC_CLASS={"Likely":"fLikely","On Track":"fOnTrack","At Risk":"fAtRisk","Needs Action":"fNeeds","교역자 Review":"fReview"};
+function rHome(){
+  const ps=C.people.filter(p=>inScope(p.table)), n=ps.length;
+  const openC=C.cases.filter(c=>c.stage!=="종결"&&inScope(c.table));
+  const red=openC.filter(c=>c.cur==="Red").length, yel=openC.filter(c=>c.cur==="Yellow").length;
+  const fcN=k=>ps.filter(p=>p.fc===k).length;
+  const ok=fcN("Likely")+fcN("On Track");
+  const sp=C.weeks.filter(w=>w.sp==="확정").length;
+  const f=C.focal, prepP=f?pct(f.prep.filter(x=>x>=2).length,PREP.length-f.prep.filter(x=>x===3).length+f.prep.filter(x=>x===3).length):0;
+  const b=(a,c)=>`<span style="width:${a}%;background:${c}"></span>`;
+  $("kpis").innerHTML=`
+   <div class="kpi"><div class="l">등록 교육생</div><div class="v">${n}<small>명</small></div><div class="s">${me().table==="ALL"?"5 Table":me().table} · ${C.elapsed}/10주 진행</div></div>
+   <div class="kpi"><div class="l">열린 Care</div><div class="v" style="color:${red?"var(--red)":"inherit"}">${red+yel}<small>명</small></div><div class="s">Red ${red} · Yellow ${yel} (최근 신호 기준)</div></div>
+   <div class="kpi"><div class="l">수료 순항</div><div class="v">${pct(ok,n)}<small>%</small></div><div class="bar">${b(pct(fcN("Likely"),n),"var(--navy)")}${b(pct(fcN("On Track"),n),"var(--muted)")}${b(pct(fcN("At Risk"),n),"var(--amber)")}${b(pct(fcN("Needs Action")+fcN("교역자 Review"),n),"var(--red)")}</div><div class="s">At Risk ${fcN("At Risk")} · Needs ${fcN("Needs Action")} · Review ${fcN("교역자 Review")}</div></div>
+   <div class="kpi"><div class="l">강사 확정</div><div class="v">${sp}<small>/10</small></div><div class="bar">${b(sp*10,"var(--blue)")}</div><div class="s">PPT Final ${C.weeks.filter(w=>w.ppt==="Final").length}/10</div></div>
+   <div class="kpi"><div class="l">${f?f.no+"주차 준비물":"준비물"}</div><div class="v">${f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0}<small>%</small></div><div class="bar">${b(f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0,"var(--green)")}</div><div class="s">${f?fmt(f.n)+" 기준 7종":"과정 종료"}</div></div>`;
+  // head
+  let m,why;
+  if(!n){m="등록 교육생이 없습니다 → 매뉴얼·관리 탭 명단 관리에서 Registered 교육생을 입력해야 Care·수료 집계가 시작됩니다";why="v3의 빈 명단 50행 'Needs Action' 오집계는 v4에서 제외됩니다.";}
+  else if(!C.elapsed){m=`개강 전: 등록 ${n}명, 강사 확정 ${sp}/10 → 개강 전까지 강사 섭외와 조편성(Table 초안)을 마무리해야 합니다`;why="Care·출석·수료 데이터는 1주차 교육 후부터 쌓입니다.";}
+  else{const risk=ps.filter(p=>["At Risk","Needs Action","교역자 Review"].includes(p.fc));const byT=TABLES.filter(inScope).map(t=>({t,k:risk.filter(p=>p.table===t).length})).sort((a,b)=>b.k-a.k)[0];
+    m=`${C.elapsed}주 진행, 열린 Care ${red+yel}명(Red ${red}) · 수료 위험 ${risk.length}명 → ${red?"Red 교역자 연결과 ":""}${byT&&byT.k?byT.t+" 중심 보완계획이":"개별 보완계획이"} 이번 주 우선입니다`;
+    why=`수료 판정 잔여 ${C.remain}주. 부족 요건 합계가 잔여 주차의 2배를 넘거나 결석이 허용 한도에 닿으면 At Risk로 분류합니다.`;}
+  $("homeHead").innerHTML=`<p>${esc(m)}</p><div class="why">${esc(why)}</div>`;
+  // map
+  $("map").innerHTML=C.active.length?TABLES.map(t=>{
+    const seats=C.people.filter(x=>x.table===t), okT=inScope(t);
+    let g=`<circle cx="84" cy="84" r="33" fill="var(--soft)" stroke="var(--line)"/><text x="84" y="81" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${t}</text><text x="84" y="97" text-anchor="middle" font-size="10" fill="var(--muted)">${LEADER[t]}</text>`;
+    seats.forEach((p,i)=>{const a=(-90+i*360/Math.max(seats.length,5))*Math.PI/180,x=84+61*Math.cos(a),y=84+61*Math.sin(a);
+      const fill={Red:"var(--red-bg)",Yellow:"var(--amber-bg)",Green:"var(--green-bg)",None:"var(--paper)"}[p.sig];
+      const st={"Likely":`stroke="var(--navy)" stroke-width="2"`,"On Track":`stroke="var(--muted)" stroke-width="1.4"`,"At Risk":`stroke="var(--amber)" stroke-width="2.4" stroke-dasharray="4 3"`,"Needs Action":`stroke="var(--red)" stroke-width="2.4" stroke-dasharray="4 3"`,"교역자 Review":`stroke="var(--red)" stroke-width="3"`}[p.fc];
+      const ex=p.fc==="교역자 Review"?`<circle cx="${x}" cy="${y}" r="24.5" fill="none" stroke="var(--red)" stroke-width="1"/>`:"";
+      g+=`<g class="seat" data-act="seat" data-n="${esc(p.name)}" ${okT?'tabindex="0" role="button"':""} aria-label="${esc(p.name)} ${p.sig} ${p.fc}"><title>${esc(p.name)} · ${p.sig==="None"?"입력 전":p.sig} · ${p.fc}</title>${ex}<circle class="s" cx="${x}" cy="${y}" r="20" fill="${fill}" ${st}/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--ink)" pointer-events="none">${esc(p.name.slice(1))}</text></g>`;});
+    return `<div class="tbl${okT?"":" dim"}"><svg viewBox="0 0 168 168" role="img" aria-label="${t} 좌석">${g}</svg></div>`;}).join(""):`<div class="empty" style="grid-column:1/-1">좌석 맵에 표시할 교육생이 없습니다. 명단 관리에서 교육생과 Table을 입력하면 배치됩니다.</div>`;
+  rPerson();
+  $("decisions").innerHTML=decisions().map(d=>`<li class="${d.p1?"p1":""}"><div><b>${esc(d.t)}</b><span>${esc(d.d)}</span>${d.tab&&P().tabs.includes(d.tab)?` <button class="link" data-act="go" data-t="${d.tab}">열기</button>`:""}</div></li>`).join("");
+  $("wkTitle").textContent=f?`${f.no}주차 교육 · ${fmt(f.n)}`:"교육 일정 종료";
+  $("wkInfo").innerHTML=f?`<p style="margin:0 0 4px;font-size:15px;font-weight:700">${esc(f.topic)}</p><dl class="kv"><dt>강사</dt><dd>${esc(f.speaker||"미확정")} <span class="muted">(${f.sp})</span></dd><dt>대표기도</dt><dd>${esc(f.prayer||"미정")}</dd><dt>장소·시간</dt><dd>${esc(D().cfg.venue)} ${esc(D().cfg.time)}</dd><dt>PPT</dt><dd>${f.ppt} · 마감 ${fmt(f.n-3)}</dd></dl>`:`<p class="muted">사후 마일스톤을 기수 캘린더에서 확인합니다.</p>`;
+}
+function rPerson(){
+  const el=$("person"),p=C.people.find(x=>x.name===S.sel);
+  if(!p||!inScope(p.table)){el.innerHTML="";return;}
+  const c=C.cases.find(x=>x.name===p.name&&x.stage!=="종결"),mask=P().careMask;
+  el.innerHTML=`<div class="person"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px">${esc(p.name)} <span class="muted">${p.table} · ${LEADER[p.table]}</span></b><button class="btn" data-act="closeP">닫기</button></div>
+   <dl class="kv"><dt>최근 신호</dt><dd><span class="pill ${p.sig}">${p.sig==="None"?"입력 전":p.sig}</span>${p.last?` <span class="muted">${p.last.w}주차</span>`:""}</dd><dt>수료 전망</dt><dd><span class="pill ${FC_CLASS[p.fc]}">${p.fc}</span> ${p.lack.length?`<span class="muted">부족: ${p.lack.join("·")}</span>`:""}</dd>
+   <dt>결석</dt><dd>${p.absN}회 / 허용 ${D().cfg.crit.abs}회</dd><dt>열린 Care</dt><dd>${c?(mask?"진행 중 (상세 제한)":`${c.pr} · ${esc(c.cat)} · ${esc(c.act)} · ${c.stage}${c.esc?" · 교역자 연결됨":""}`):"없음"}</dd></dl>
+   ${P().input?`<button class="btn pri" data-act="inputFor" data-n="${esc(p.name)}">주간 Care 입력</button>`:""}</div>`;
+}
+function decisions(){
+  const L=[],sc=c=>inScope(c.table);
+  C.cases.filter(c=>c.stage!=="종결"&&c.cur==="Red"&&sc(c)).forEach(c=>L.push({p1:1,t:`${c.name}(${c.table}) Red ${c.esc?"— 교역자 Review 진행 중":"— 교역자 연결"}`,d:c.esc?"담당교역자가 Review 완료로 종결합니다.":"Red는 당일 Escalation이 원칙입니다.",tab:"care"}));
+  const y=C.cases.filter(c=>c.stage==="신규"&&c.cur==="Yellow"&&sc(c));
+  if(y.length)L.push({t:`Yellow ${y.length}건 연락 미착수`,d:y.map(c=>c.name).join(", ")+" — D+2까지 연락합니다.",tab:"care"});
+  const over=allOpenTasks().filter(x=>x.s.st==="over").length+MS.filter(m=>msStatus(m).over).length;
+  if(over&&P().tabs.includes("today"))L.push({p1:over>3?1:0,t:`지연 업무 ${over}건`,d:"오늘 할 일 탭의 '지연된 일'부터 닫습니다.",tab:"today"});
+  const soon=C.weeks.filter(w=>w.sp!=="확정"&&w.n>=C.T&&w.n-C.T<=30);
+  if(soon.length)L.push({p1:soon.some(w=>w.n-C.T<=14)?1:0,t:`30일 내 강사 미확정 ${soon.length}개 주차`,d:soon.map(w=>`${w.no}주차(${fmt(w.n)})`).join(", "),tab:"board"});
+  const risk=C.people.filter(p=>sc(p)&&["At Risk","Needs Action"].includes(p.fc));
+  if(risk.length)L.push({t:`수료 위험 ${risk.length}명 보완계획`,d:risk.slice(0,6).map(p=>p.name).join(", ")+(risk.length>6?" 외":""),tab:"grad"});
+  if(C.T>=C.G-21&&C.T<C.G)L.push({p1:1,t:`수료 D-${C.G-C.T}: 수료 예상자 사전관리`,d:"미충족 요건 보완 일정과 공식 판정 준비",tab:"grad"});
+  if(!L.length)L.push({t:"긴급 결정사항 없음",d:"사이클·Care·수료 모두 안정 범위입니다."});
+  return L;
+}
+
+/* ================= BOARD ================= */
+function rBoard(){
+  const ed=P().board, W=C.weeks, sp=W.filter(w=>w.sp==="확정").length;
+  const soon=W.filter(w=>w.sp!=="확정"&&w.n>=C.T).slice(0,3);
+  $("boardHead").innerHTML=`<p>강사 확정 ${sp}/10, PPT Final ${W.filter(w=>w.ppt==="Final").length}/10 → ${soon.length?soon.map(w=>w.no+"주차").join("·")+" 강사 섭외를 먼저 확정해야 합니다":"전 주차 강사가 확정되었습니다. PPT 마감(D-3)을 관리합니다"}</p><div class="why">1주차 ${fmt(C.O)} ~ 10주차 ${fmt(C.END)} · 9주차 ${fmt(C.G)} 수료예배. 날짜를 바꾸면 오늘 할 일·Reminder·캘린더가 함께 이동합니다.</div>`;
+  $("recalcBtn").style.display=ed?"":"none";
+  $("board").innerHTML=`<thead><tr><th>주차</th><th>날짜</th><th>주제</th><th>강사</th><th>섭외</th><th>PPT<br><span style="font-weight:400">마감 D-3</span></th><th>대표기도</th>${PREP.map(p=>`<th class="c" title="${p}">${p.replace("/광고","").slice(0,3)}</th>`).join("")}<th>D+1 감사</th><th>상태</th></tr></thead><tbody>${W.map((w,i)=>{
+    const past=w.n<C.T, cur=C.focal&&C.focal.no===w.no;
+    const sel=(k,opts)=>ed?`<select data-act="wk" data-i="${i}" data-f="${k}" aria-label="${w.no}주차 ${k}">${opts.map(o=>`<option ${o===w[k]?"selected":""}>${o}</option>`).join("")}</select>`:esc(w[k]);
+    const txt=(k,ph)=>ed?`<input type="text" data-act="wk" data-i="${i}" data-f="${k}" value="${esc(w[k])}" placeholder="${esc(ph)}" aria-label="${w.no}주차 ${k}">`:esc(w[k]||"-");
+    const status=past?"완료":cur?(C.T===w.n?"D-Day":"이번 주"):"예정";
+    return `<tr class="${cur?"cur":past?"past":""}"><td><b>${w.no}</b></td><td>${ed?`<input type="date" data-act="wk" data-i="${i}" data-f="date" value="${w.date}" aria-label="${w.no}주차 날짜">`:""}<div class="muted">${fmt(w.n)}</div></td>
+     <td style="min-width:150px">${esc(w.topic)}</td><td>${ed?`<select data-act="wkSp" data-i="${i}" aria-label="${w.no}주차 강사"><option value="">미정</option>${(D().speakers||[]).filter(s=>!s.archived||s.id===w.speakerId).map(s=>`<option value="${s.id}" ${s.id===w.speakerId?"selected":""}>${esc(s.name)}</option>`).join("")}${w.speaker&&!w.speakerId?`<option selected value="">${esc(w.speaker)} (목록 밖)</option>`:""}<option value="__new">＋ 새 강사 등록…</option></select>`:esc(w.speaker||"-")}${!w.speaker&&SP25[i]?`<div class="muted">'25 ${esc(SP25[i])}</div>`:""}</td><td>${sel("sp",["미섭외","섭외중","확정","변경"])}</td><td>${sel("ppt",["미수령","초안","Final"])}</td><td>${txt("prayer","장로님")}</td>
+     ${w.prep.map((v,j)=>`<td class="c"><button class="sq s${v}" data-act="prep" data-i="${i}" data-j="${j}" ${ed?"":"disabled"} title="${PREP[j]}: ${PSTAT[v]}" aria-label="${w.no}주차 ${PREP[j]} ${PSTAT[v]}">${["","…","✓","–"][v]}</button></td>`).join("")}
+     <td>${sel("thanks",["미완료","진행중","완료"])}</td><td><span class="st ${past?"ok":cur?"due":"up"}">${status}</span></td></tr>`;}).join("")}</tbody>`;
+}
+
+/* ================= D-DAY ================= */
+function ddLog(no){const d=D();if(!d.dd[no])d.dd[no]={it:{},db:{}};return d.dd[no];}
+function rDday(){
+  const W=C.weeks, no=S.ddW||(C.focal?C.focal.no:10), w=W[no-1], ed=P().dday, lg=D().dd[no]||{it:{},db:{}};
+  $("ddWeeks").innerHTML=W.map(x=>`<button class="chip" data-act="ddw" data-w="${x.no}" aria-pressed="${x.no===no}">${x.no}주차 ${fmt(x.n).replace(/\(.\)/,"")}</button>`).join("");
+  const done=DDAY.filter((x,i)=>lg.it[i]&&lg.it[i].done).length, p=pct(done,DDAY.length);
+  const issues=DDAY.filter((x,i)=>lg.it[i]&&lg.it[i].issue).length;
+  const x=C.T-w.n;
+  $("ddHead").innerHTML=`<p>${no}주차 ${fmt(w.n)} D-Day ${done}/${DDAY.length} 완료${issues?` · 이슈 ${issues}건`:""} → ${x<0?`D-${-x}: 담당자 배정과 T-120 집결(13:30)을 사전 공유합니다`:x===0?"시점 순서대로 체크하고, 이슈는 발생 즉시 Owner를 지정합니다":done<DDAY.length?"미완료 항목과 D+1·D+2 후속을 닫아야 합니다":"이번 주차 현장 운영이 모두 닫혔습니다"}</p><div class="why">${esc(w.topic)} · 강사 ${esc(w.speaker||"미확정")} · 대표기도 ${esc(w.prayer||"미정")}${ed?"":" · 조회 전용 계정"}</div>`;
+  $("ddTitle").textContent=`${no}주차 D-Day 체크 (14개 시점)`;
+  $("ddSub").textContent=`${fmtL(w.n)} · 시작 ${D().cfg.time.split("~")[0]} 기준 시각`;
+  const Cc=2*Math.PI*38;
+  $("ddRing").innerHTML=`<circle cx="48" cy="48" r="38" fill="none" stroke="var(--soft)" stroke-width="10"/><circle cx="48" cy="48" r="38" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${Cc*p/100} ${Cc}" opacity="${p?1:0}" transform="rotate(-90 48 48)"/><text x="48" y="55" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink)">${p}%</text>`;
+  $("ddList").innerHTML=DDAY.map((d,i)=>{const it=lg.it[i]||{};return `<div class="ddi"><div class="tp">${d[0]}<small>${DDCLOCK[d[0]]}</small></div>
+    <button class="cb${it.done?" on":""}" data-act="dd" data-i="${i}" ${ed?"":"disabled"} aria-pressed="${!!it.done}" aria-label="${d[1]} 완료">${it.done?"✓":""}</button>
+    <div><div class="tt" style="font-weight:600">${d[1]} · ${esc(d[2])}</div><div class="muted">${esc(d[3])}</div></div>
+    ${ed||it.issue?`<div class="issue"><input type="text" data-act="ddIssue" data-i="${i}" value="${esc(it.issue||"")}" placeholder="이슈·조치 (발생 시)" ${ed?"":"readonly"} aria-label="${d[1]} 이슈"></div>`:""}</div>`;}).join("");
+  const ros=[["14:30~15:20",50,"교육준비 및 기도회 (테이블·AV·간식)",1],["15:20~15:30",10,"Welcome — 모든 스텝"],["15:30~15:40",10,"찬양"],["15:40~15:45",5,`기도 및 축복메시지 — ${w.prayer||"주별 장로님"}`]];
+  if(no===1)ros.push(["15:45~16:00",15,"오리엔테이션 — 팀장 또는 총무"],["16:00~17:00",60,`${no}주차 강의 — ${w.speaker||"강사 미확정"}`]);
+  else ros.push(["15:45~17:00",75,`${no}주차 강의 — ${w.speaker||"강사 미확정"}`]);
+  ros.push(["17:00~17:10",10,"휴식 · 간식 나눔"],["17:10~17:20",10,"조별 강의주제 나눔 — 조장"],["17:20~17:25",5,"광고 — 팀장"],["17:25~17:30",5,"마침기도 및 축도 — 담당교역자"]);
+  $("ros").innerHTML=ros.map(r=>`<div class="tm ${r[3]?"pre":""}">${r[0]}</div><div class="mn">${r[1]}분</div><div class="${r[3]?"pre":""}">${esc(r[2])}</div>`).join("")+`<div class="tm"><b>교육 시간</b></div><div class="mn"><b>120분</b></div><div class="muted">15:30~17:30 (사전 준비 50분 별도)</div>`;
+  $("debrief").innerHTML=[["keep","Keep"],["problem","Problem"],["care","Care"],["next","Next"]].map(([k,l])=>`<label>${l}<textarea data-act="db" data-k="${k}" ${ed?"":"readonly"} placeholder="${k==="care"?"이름 없이 신호·조치만":""}">${esc(lg.db[k]||"")}</textarea></label>`).join("");
+}
+
+/* ================= CARE ================= */
+let F={sig:"Green",att:"Present"};
+function rCare(){
+  const pm=P(), mask=pm.careMask, cs=C.cases.filter(c=>inScope(c.table));
+  const open=cs.filter(c=>c.stage!=="종결"), red=open.filter(c=>c.cur==="Red");
+  $("careHead").innerHTML=!C.elapsed?`<p>아직 주간 Care 입력이 없습니다 → 1주차(${fmt(C.O)}) 교육 직후 테이블리더가 입력하면 이 큐가 자동으로 채워집니다</p>`:
+   `<p>열린 Care ${open.length}건(Red ${red.length}) → ${red.some(c=>!c.esc)?"교역자 연결이 안 된 Red를 오늘 처리해야 합니다":open.some(c=>c.stage==="신규")?"신규 Yellow는 D+2까지 연락 단계로 옮깁니다":"모든 Care가 진행·종결 단계에 있습니다"}</p><div class="why">${mask?"총무 계정은 Category·Action을 볼 수 없고 단계 변경도 할 수 없습니다.":"최근 주간 신호가 Green으로 돌아오면 자동으로 종결 열로 이동합니다."}</div>`;
+  const fl=[["open","진행 중"],["all","전체"],["Red","Red"],["Yellow","Yellow"]];
+  $("careFilter").innerHTML=fl.map(([k,l])=>`<button class="chip" data-act="careF" data-k="${k}" aria-pressed="${S.careF===k}">${l}</button>`).join("");
+  const list=cs.filter(c=>S.careF==="all"||S.careF==="open"?true:c.sig===S.careF);
+  const cols=S.careF==="open"?["신규","연락·면담 중"]:["신규","연락·면담 중","종결"];
+  $("kanban").style.gridTemplateColumns=`repeat(${cols.length},minmax(0,1fr))`;
+  $("kanban").innerHTML=cols.map(stg=>{const cards=list.filter(c=>c.stage===stg).sort((a,b)=>a.pr.localeCompare(b.pr));
+    return `<div class="col"><h3><span>${stg}</span><span>${cards.length}</span></h3>${cards.map(c=>{
+      let a="";
+      if(stg!=="종결"){
+        if(me().role==="TeamLeader"){if(stg==="신규")a+=`<button class="btn" data-act="cs" data-n="${esc(c.name)}" data-s="연락·면담 중">연락 시작</button>`;if(c.cur==="Red"&&!c.esc)a+=`<button class="btn warn" data-act="esc" data-n="${esc(c.name)}">교역자 연결</button>`;if(c.cur!=="Red")a+=`<button class="btn" data-act="cs" data-n="${esc(c.name)}" data-s="종결">종결</button>`;}
+        if(pm.careTL&&stg==="신규"&&c.cur==="Yellow")a+=`<button class="btn" data-act="cs" data-n="${esc(c.name)}" data-s="연락·면담 중">연락 완료</button>`;
+        if(me().role==="Pastor"&&c.cur==="Red")a+=`<button class="btn pri" data-act="cs" data-n="${esc(c.name)}" data-s="종결">Review 완료</button>`;
+      }
+      return `<div class="card ${c.sig}"><div class="t"><b>${esc(c.name)}</b><span class="pill ${c.sig}">${c.pr} ${c.sig}</span></div><div class="m">${c.table} · ${LEADER[c.table]} · ${c.w}주차 신호${c.recovered?" · Green 회복":""}</div>
+       ${mask?`<div class="mask">Category · Action 상세 제한</div>`:`<div style="font-size:13px">${esc(c.cat)} · ${esc(c.act)}</div>`}${c.esc&&!mask?`<div style="font-size:11px;color:var(--red);font-weight:700;margin-top:3px">교역자 연결됨</div>`:""}${a?`<div class="a">${a}</div>`:""}</div>`;}).join("")||`<div class="empty">없음</div>`}</div>`;}).join("");
+  // input form
+  const box=$("inputBox");box.style.display=pm.input?"":"none";
+  if(pm.input)rForm();
+  // heatmap
+  const ps=C.people.filter(p=>inScope(p.table));
+  $("heat").innerHTML=ps.length?`<thead><tr><th>Table</th><th>이름</th>${C.weeks.map(w=>`<th class="c">${w.no}</th>`).join("")}<th>결석</th><th>최근</th></tr></thead><tbody>${ps.map(p=>`<tr><td>${p.table}</td><td><b>${esc(p.name)}</b></td>${C.weeks.map(w=>{const e=p.hist.find(h=>h.w===w.no);return `<td class="c">${e?`<span class="hm ${e.att[0]} ${e.sig==="Yellow"?"sY":e.sig==="Red"?"sR":""}" title="${w.no}주차 ${e.att} · ${e.sig}">${e.att[0]}</span>`:`<span class="hm n">·</span>`}</td>`;}).join("")}<td class="c ${p.absN>=D().cfg.crit.abs?"short":""}">${p.absN}</td><td><span class="pill ${p.sig}">${p.sig==="None"?"-":p.sig}</span></td></tr>`).join("")}</tbody>`:`<tbody><tr><td class="empty">등록 교육생이 없습니다.</td></tr></tbody>`;
+}
+function rForm(){
+  const tl=me().role==="TableLeader", tabs=TABLES.filter(inScope);
+  const pre=C.people.find(p=>p.name===S.sel&&inScope(p.table));
+  const t0=pre?pre.table:tabs[0];
+  const defW=Math.max(1,C.elapsed||1);
+  const maxW=Math.max(1,C.elapsed);
+  $("careForm").innerHTML=`
+   <label>주차<select name="w">${C.weeks.map(w=>`<option value="${w.no}" ${w.no===defW?"selected":""} ${w.no>maxW?"disabled":""}>${w.no}주차 ${fmt(w.n)}${w.no>maxW?" (교육 전)":""}</option>`).join("")}</select></label>
+   <label>Table<select name="table" ${tl?"disabled":""}>${tabs.map(t=>`<option ${t===t0?"selected":""}>${t}</option>`).join("")}</select></label>
+   <label>교육생<select name="name" id="fName"></select></label>
+   <label>참여도 (1~5)<select name="part">${[1,2,3,4,5].map(v=>`<option ${v===3?"selected":""}>${v}</option>`).join("")}</select></label>
+   <label class="w2">출석<div class="seg" data-g="att">${["Present","Late","Absent","Excused"].map(a=>`<button type="button" data-act="seg" data-g="att" data-v="${a}" aria-pressed="${F.att===a}">${a}</button>`).join("")}</div></label>
+   <label class="w2">Care Signal<div class="seg">${[["Green","g"],["Yellow","y"],["Red","r"]].map(([s,c])=>`<button type="button" class="${c}" data-act="seg" data-g="sig" data-v="${s}" aria-pressed="${F.sig===s}">${s}</button>`).join("")}</div></label>
+   <label>QT/과제<select name="qt"><option>정상</option><option>부분</option><option>미완료</option></select></label>
+   <label>Category<select name="cat"><option value="">-</option><option>출석</option><option>관계</option><option>가정</option><option>신앙</option><option>건강</option><option>기타</option></select></label>
+   <label class="w2">Action<input name="act" placeholder="연락 / 기도 / 면담 / 교역자 연결"></label>
+   <label class="w4">비고 (최소정보)<input name="note" maxlength="80" placeholder="예: 화요일 통화 예정"></label>
+   <div class="w4" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn pri" type="submit" style="padding:9px 20px;font-size:14px" ${C.elapsed&&C.active.length?"":"disabled"}>주간 Care 저장</button><span class="muted">${!C.elapsed?"1주차 교육일 이후 입력할 수 있습니다.":F.sig==="Red"?"Red는 P1 Care로 올라가고 교역자 연결 대기가 됩니다.":F.sig==="Yellow"?"Yellow는 P2 Care로 올라갑니다.":"Green이면 열린 Care가 자동 종결됩니다."}</span></div>`;
+  fillNames(t0,pre&&pre.name);
+}
+function fillNames(t,sel){const ps=C.people.filter(p=>p.table===t);$("fName").innerHTML=ps.map(p=>`<option ${p.name===sel?"selected":""}>${esc(p.name)}</option>`).join("")||`<option value="">명단 없음</option>`;}
+function submitCare(e){
+  e.preventDefault();const f=new FormData(e.target),v={};f.forEach((x,k)=>v[k]=x);
+  const table=me().table==="ALL"?v.table:me().table;
+  if(!v.name){toast("교육생을 선택하세요.");return;}
+  const w=+v.w, d=D();
+  const rec={w,name:v.name,table,att:F.att,part:F.att==="Absent"?"-":v.part,qt:F.att==="Absent"?"-":v.qt,sig:F.sig,cat:v.cat||(F.att==="Absent"?"출석":""),act:v.act||(F.sig==="Red"?"담당교역자 연결":F.sig==="Yellow"?"개별 연락 후 상황 확인":""),by:me().name};
+  d.logs=d.logs.filter(x=>!(x.name===rec.name&&x.w===w));d.logs.push(rec);api("care",{rec:{...rec,note:v.note||""}});
+  if(F.sig!=="Green"){const st=d.cases[rec.name];if(st&&st.stage==="종결"&&w>st.closedW)d.cases[rec.name]={stage:"신규",esc:false,closedW:st.closedW};}
+  audit("주간 Care 입력",`${w}주차 ${table} ${rec.name} ${rec.att}/${rec.sig}`);
+  toast(`${rec.name} ${w}주차 저장 완료`);S.sel=rec.name;F={sig:"Green",att:"Present"};render();
+}
+
+/* ================= GRAD ================= */
+function rGrad(){
+  const cr=D().cfg.crit, ps=C.people.filter(p=>inScope(p.table)), n=ps.length, K=["Likely","On Track","At Risk","Needs Action","교역자 Review"];
+  const cnt=k=>ps.filter(p=>p.fc===k).length;
+  $("critTxt").textContent=`참고 기준: 순장실습 ${cr.sil}회 · 순장공부 ${cr.gong}회 · 아웃리치 ${cr.out} · 독후감 ${cr.dok} · 결석 ${cr.abs}회 이하${D().cfg.excAbs?" (사유결석 포함)":" (사유결석 제외)"} · 판정 잔여 ${C.remain}주 (9주차 수료예배까지)`;
+  $("gradHead").innerHTML=n?`<p>수료 Likely ${cnt("Likely")}명 · On Track ${cnt("On Track")}명 · 위험 ${cnt("At Risk")+cnt("Needs Action")+cnt("교역자 Review")}명 → ${C.T>=C.G-21&&C.T<C.G?`수료 D-${C.G-C.T}, 위험 인원의 부족 요건을 개별 일정으로 확정해야 합니다`:C.elapsed?"At Risk 인원은 이번 주 테이블리더와 보완 일정을 잡아야 합니다":"개강 전이라 전원 On Track으로 시작합니다"}</p><div class="why">공식 수료 판정은 담당교역자·내부 기준이 우선합니다. 이 화면은 운영 참고용 예측입니다.${P().assign?" 과제 칸의 +/−로 실적을 기록합니다.":""}</div>`:`<p>등록 교육생이 없습니다 → 명단 관리에서 등록 후 판정이 시작됩니다</p>`;
+  const col={"Likely":"var(--navy)","On Track":"var(--muted)","At Risk":"var(--amber)","Needs Action":"var(--red)","교역자 Review":"#6d1f1f"};
+  $("gradDist").innerHTML=n?`<div class="bar" style="height:24px;border-radius:6px">${K.map(k=>cnt(k)?`<span style="width:${pct(cnt(k),n)}%;background:${col[k]}" title="${k} ${cnt(k)}"></span>`:"").join("")}</div><div class="legend" style="border:0">${K.map(k=>`<span><i class="sw" style="background:${col[k]}"></i>${k} ${cnt(k)}</span>`).join("")}</div>`:`<div class="empty">데이터 없음</div>`;
+  $("gradFilter").innerHTML=[["all","전체"],...K.map(k=>[k,k])].map(([k,l])=>`<button class="chip" data-act="gradF" data-k="${esc(k)}" aria-pressed="${S.gradF===k}">${l}</button>`).join("");
+  const rows=ps.filter(p=>S.gradF==="all"||p.fc===S.gradF), ed=P().assign, of=P().official;
+  const cell=(p,k)=>{const[v,nn]=p.req[k];const t=`<span class="${v>=nn?"met":"short"}">${v}/${nn}</span>`;return ed?`<span class="cnt"><button data-act="adj" data-n="${esc(p.name)}" data-k="${k}" data-d="-1" aria-label="감소">−</button>${t}<button data-act="adj" data-n="${esc(p.name)}" data-k="${k}" data-d="1" aria-label="증가">+</button></span>`:t;};
+  $("gradTable").innerHTML=`<thead><tr><th>Table</th><th>이름</th><th>순장실습</th><th>순장공부</th><th>아웃리치</th><th>독후감</th><th>결석</th><th>Care</th><th>전망</th><th>공식 판정</th></tr></thead><tbody>${rows.map(p=>`<tr><td>${p.table}</td><td><b>${esc(p.name)}</b></td><td>${cell(p,"sil")}</td><td>${cell(p,"gong")}</td><td>${cell(p,"out")}</td><td>${cell(p,"dok")}</td>
+   <td class="${p.absN>cr.abs?"short":p.absN===cr.abs?"short":""}">${p.absN}/${cr.abs}</td><td><span class="pill ${p.sig}">${p.sig==="None"?"-":p.sig}</span></td><td><span class="pill ${FC_CLASS[p.fc]}">${p.fc}</span></td>
+   <td>${of?`<select data-act="official" data-n="${esc(p.name)}" aria-label="${esc(p.name)} 공식 판정">${["미정","수료","보류"].map(o=>`<option ${o===(D().official[p.name]||"미정")?"selected":""}>${o}</option>`).join("")}</select>`:esc(D().official[p.name]||"미정")}</td></tr>`).join("")||`<tr><td colspan="10" class="empty">조건에 맞는 교육생이 없습니다.</td></tr>`}</tbody>`;
+}
+
+/* ================= CALENDAR ================= */
+function rCal(){
+  const ed=P().cal, rows=MS.map(m=>({m,...msStatus(m)}));
+  const over=rows.filter(r=>r.over), cur=rows.filter(r=>C.T>=r.s&&C.T<=r.e&&r.m.id!=="m9");
+  $("calHead").innerHTML=`<p>${cur.length?cur.map(r=>r.m.ph+" "+r.m.k).join(" · ")+" 단계":"단계 사이 기간"}${over.length?`, 지연 ${over.length}건`:""} → ${over.length?over.map(r=>r.m.k+" "+r.m.ph).join("·")+"을 먼저 닫아야 합니다":"다음 마일스톤을 준비합니다"}</p><div class="why">기획 M-2 ${fmt(C.O-61)} → 개강 ${fmt(C.O)} → 수료 ${fmt(C.G)} → 사후 D+90 ${fmt(C.G+90)}</div>`;
+  const a=C.O-65,b=C.G+95,span=b-a,X=n=>((n-a)/span*100).toFixed(2)+"%";
+  const months=[];for(let n=a;n<=b;n++){const d=new Date(n*DAY);if(d.getUTCDate()===1)months.push(n);}
+  $("gantt").innerHTML=`<div class="gaxis">${months.map(n=>{const d=new Date(n*DAY);return `<span style="left:${X(n)}">${d.getUTCFullYear()%100}.${d.getUTCMonth()+1}</span>`;}).join("")}</div>`+
+   rows.map(r=>`<div class="grow"><div class="gl" title="${esc(r.m.t)}"><small>${r.m.k}</small>${r.m.ph}</div><div class="gtrack">${C.T>=a&&C.T<=b?`<div class="gtoday" style="left:${X(C.T)}"></div>`:""}<div class="gbar ${r.over?"Over":r.st==="Done"?"Done":r.st==="Hold"?"Hold":r.st==="Not Started"?"Not":""}" style="left:${X(r.s)};width:calc(${((r.e-r.s+1)/span*100).toFixed(2)}%)" title="${fmt(r.s)}~${fmt(r.e)} · ${r.st}"></div></div></div>`).join("")+
+   `<div class="legend"><span><i class="sw" style="background:var(--line);border-radius:3px"></i>Not Started</span><span><i class="sw" style="background:var(--blue);border-radius:3px"></i>In Progress</span><span><i class="sw" style="background:var(--green);border-radius:3px"></i>Done</span><span><i class="sw" style="background:var(--red);border-radius:3px"></i>지연</span></div>`;
+  $("msTable").innerHTML=`<thead><tr><th>단계</th><th>기간</th><th>핵심업무</th><th>Owner</th><th>상태</th></tr></thead><tbody>${rows.map(r=>`<tr class="${C.T>=r.s&&C.T<=r.e?"cur":""}"><td style="white-space:nowrap"><b>${r.m.ph}</b> <span class="muted">${r.m.k}</span></td><td style="white-space:nowrap">${fmt(r.s)}${r.s!==r.e?"~"+fmt(r.e):""}</td><td>${esc(r.m.t)}<div class="muted">완료기준: ${esc(r.m.done)}</div></td><td>${esc(r.m.o)}</td>
+    <td>${ed?`<select data-act="ms" data-id="${r.m.id}" aria-label="${r.m.ph} 상태">${MSTAT.map(o=>`<option ${o===r.st?"selected":""}>${o}</option>`).join("")}</select>`:r.st}${r.over?` <span class="st over">지연</span>`:""}</td></tr>`).join("")}</tbody>`;
+  const pr=D().prep;
+  $("prepList").innerHTML=PREPLAN.map((t,i)=>`<label class="pchk"><input type="checkbox" data-act="prepPlan" data-i="${i}" ${pr[i]?"checked":""} ${ed?"":"disabled"}><span>${esc(t)}</span><span class="muted">${pr[i]?"완료":""}</span></label>`).join("")+`<div class="muted" style="padding-top:8px">${Object.values(pr).filter(Boolean).length}/${PREPLAN.length} 완료</div>`;
+  const B=D().budget,tp=B.reduce((s,x)=>s+(+x.plan||0),0),ts=B.reduce((s,x)=>s+(+x.spend||0),0);
+  $("budget").innerHTML=`<thead><tr><th>구분</th><th>예산/수입(원)</th><th>지출(원)</th><th>상태</th></tr></thead><tbody>${B.map((x,i)=>`<tr><td>${x.b}</td><td>${ed?`<input type="number" min="0" step="1000" data-act="bud" data-i="${i}" data-f="plan" value="${x.plan||""}" style="width:110px" aria-label="${x.b} 예산">`:(+x.plan).toLocaleString()}</td><td>${ed?`<input type="number" min="0" step="1000" data-act="bud" data-i="${i}" data-f="spend" value="${x.spend||""}" style="width:110px" aria-label="${x.b} 지출">`:(+x.spend).toLocaleString()}</td><td>${ed?`<select data-act="bud" data-i="${i}" data-f="st">${["미집행","진행중","집행완료"].map(o=>`<option ${o===x.st?"selected":""}>${o}</option>`).join("")}</select>`:x.st}</td></tr>`).join("")}
+   <tr><td><b>합계</b></td><td><b>${tp.toLocaleString()}</b></td><td><b>${ts.toLocaleString()}</b></td><td><b>집행률 ${pct(ts,tp)}%</b></td></tr></tbody>`;
+}
+
+/* ================= MANUAL ================= */
+function rManual(){
+  const d=D(), cfgEd=P().cfg;
+  $("manHead").innerHTML=`<p>이 대시보드가 곧 운영매뉴얼입니다 → 매일 '오늘 할 일'만 열면 시점·담당·문구가 나오고, 여기서는 기준(사이클·Care·역할·설정)을 확인합니다</p><div class="why">원천: 2026_순장학교_운영매뉴얼_ERP_LITE_고도화_v3.0.xlsx (21개 시트) · 개강 ${fmtL(C.O)}</div>`;
+  $("cycleStd").innerHTML=`<thead><tr><th>시점</th><th>할 일</th><th>담당</th><th>문구</th></tr></thead><tbody>${CYCLE.map(t=>`<tr><td style="white-space:nowrap"><b>${t.st}</b></td><td>${esc(t.t)}</td><td style="white-space:nowrap">${esc(t.o)}</td><td>${t.tpl?`<button class="link" data-act="tpl" data-k="${t.tpl}">${esc(TPL[t.tpl].n)}</button>`:"-"}</td></tr>`).join("")}</tbody>`;
+  $("careRule").innerHTML=`<thead><tr><th>Signal</th><th>기준</th><th>Action</th><th>Owner</th></tr></thead><tbody>${CARE_RULE.map(r=>`<tr><td><span class="pill ${["Green","Yellow","Red"].includes(r[0])?r[0]:r[0]==="Likely"?"fLikely":"fNeeds"}">${r[0]}</span></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody>`;
+  $("duties").innerHTML=`<thead><tr><th>내용</th><th>인원</th><th>역할</th></tr></thead><tbody>${DUTIES.map(r=>`<tr><td>${r[0]}</td><td style="white-space:nowrap">${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</tbody>`;
+  $("tplLib").innerHTML=Object.entries(TPL).map(([k,t])=>`<div class="tpl"><div class="th"><b>${esc(t.n)}</b><button class="btn" data-act="tpl" data-k="${k}">문구 열기</button></div></div>`).join("");
+  {const tv=teamsView(),st=staffList().filter(s=>s.active),nm=r=>st.filter(s=>s.role===r).map(s=>s.name).join(", ")||"-";
+   $("staff").innerHTML=`<table class="dt"><tbody><tr><td>담당교역자</td><td>${esc(nm("Pastor"))}</td></tr><tr><td>담당장로</td><td>(주차 Board 대표기도 참고)</td></tr><tr><td>팀장</td><td>${esc(nm("TeamLeader"))}</td></tr><tr><td>총무</td><td>${esc(nm("Secretary"))}</td></tr><tr><td>테이블리더</td><td>${esc(TABLES.map(t=>t+" "+(LEADER[t]||"-")).join(" · "))}</td></tr>${TEAMS_ALL.map(k=>`<tr><td>${k}</td><td>${esc(tv[k].join(", "))}${cfgEd?` <input type="text" data-act="team" data-k="${k}" value="${esc(d.teams[k]||"")}" placeholder="계정 없는 인원" style="width:140px">`:d.teams[k]?" "+esc(d.teams[k]):""}${!tv[k].length&&!d.teams[k]&&!cfgEd?"미배정":""}</td></tr>`).join("")}</tbody></table><p class="muted" style="margin:8px 0 0">계정·팀 배정은 「명단 관리 › 운영진」에서 합니다.</p>`;}
+  const c=d.cfg;
+  $("setBox").style.display=cfgEd?"":"none";
+  $("settings").innerHTML=`
+   <label>기수명<input data-act="cfg" data-k="name" value="${esc(c.name)}"></label>
+   <label>개강일 (1주차)<input type="date" data-act="cfg" data-k="open" value="${c.open}"></label>
+   <label>교육장<input data-act="cfg" data-k="venue" value="${esc(c.venue)}"></label>
+   <label>교육시간<input data-act="cfg" data-k="time" value="${esc(c.time)}"></label>
+   <label>순장실습 필요횟수<input type="number" min="0" max="10" data-act="crit" data-k="sil" value="${c.crit.sil}"></label>
+   <label>순장공부 필요횟수<input type="number" min="0" max="10" data-act="crit" data-k="gong" value="${c.crit.gong}"></label>
+   <label>아웃리치 필요<input type="number" min="0" max="5" data-act="crit" data-k="out" value="${c.crit.out}"></label>
+   <label>독후감 필요<input type="number" min="0" max="5" data-act="crit" data-k="dok" value="${c.crit.dok}"></label>
+   <label>최대 결석 허용<input type="number" min="0" max="10" data-act="crit" data-k="abs" value="${c.crit.abs}"></label>
+   <label>사유결석(Excused) 결석 산입<select data-act="cfg" data-k="excAbs"><option value="false" ${c.excAbs?"":"selected"}>미산입 (권고)</option><option value="true" ${c.excAbs?"selected":""}>산입</option></select></label>`;
+  $("fixlog").innerHTML=`<thead><tr><th>등급</th><th>영역</th><th>v3.0 문제</th><th>v4 처리</th></tr></thead><tbody>${FIX.map(f=>`<tr><td style="white-space:nowrap;font-weight:700;color:${f[0]==="치명"?"var(--red)":f[0]==="높음"?"var(--amber)":"var(--blue)"}">${f[0]}</td><td style="white-space:nowrap">${f[1]}</td><td>${esc(f[2])}</td><td>${esc(f[3])}</td></tr>`).join("")}</tbody>`;
+  $("audit").innerHTML=`<thead><tr><th>시각</th><th>사용자</th><th>역할</th><th>Action</th><th>내용</th></tr></thead><tbody>${d.audit.slice(0,40).map(a=>`<tr><td style="white-space:nowrap">${a.ts}</td><td>${esc(a.user)}</td><td>${ROLE_KO[a.role]}</td><td>${esc(a.a)}</td><td>${esc(a.d)}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">기록이 없습니다. 체크·입력·상태 변경 시 쌓입니다.</td></tr>`}</tbody>`;
+}
+
+/* ================= ADMIN · 명단 관리 (v4.1) ================= */
+const ADM_SUB=[["t","교육생"],["g","조편성"],["s","강사"],["st","운영진"],["b","일괄 입력"],["ar","보관함"]];
+const STATUS=["Registered","Active","Applied","Hold","Withdraw","Completed"];
+const ST_KO={Registered:"등록",Active:"수강 중",Applied:"신청",Hold:"보류",Withdraw:"취소",Completed:"수료"};
+const TITLES=["목사","장로","권사","집사","선교사","전도사","교수","기타"];
+const SOURCES=["공동체 추천","자원","교역자 추천","재수강","기타"];
+let ADM={sub:"t",sel:null,q:"",tf:"all",sf:"live",pick:null,bulk:null,raw:"",draft:null,preWeek:null};
+const live=t=>!t.archived&&(t.status==="Active"||t.status==="Registered");
+function admSubs(){const p=P();return ADM_SUB.filter(([k])=>k==="t"||k==="s"||k==="st"||(k==="g"&&p.tEdit)||(k==="b"&&p.bulk)||(k==="ar"&&(p.tEdit||p.spEdit)));}
+function staffList(){return D().staff||[];}
+function teamsView(){const o={};TEAMS_ALL.forEach(t=>o[t]=staffList().filter(s=>s.active&&s.team===t).map(s=>s.name));return o;}
+const TEAMS_ALL=["교육팀","학사팀","섬김팀","AV","찬양"];
+const fmtTs=s=>s?String(s).slice(5,16).replace("-","/"):"";
+
+/* ---------- local mutations (시뮬레이션 + 웹앱 낙관적 반영) ---------- */
+function relinkLocal(oldN,newN,tbl){
+  const d=D();
+  d.logs.forEach(l=>{if(l.name===oldN){l.name=newN;l.table=tbl;}});
+  (d.alog||[]).forEach(x=>{if(x.name===oldN)x.name=newN;});
+  ["cases","official","adj"].forEach(k=>{if(d[k]&&d[k][oldN]!==undefined&&oldN!==newN){d[k][newN]=d[k][oldN];delete d[k][oldN];}});
+  if(S.sel===oldN)S.sel=newN;
+}
+function saveTrainee(rec,silent){
+  const d=D();
+  if(me().role==="TableLeader"){const r=d.roster.find(x=>x.id===rec.id);const ver=r.ver||1;const prev={...r};r.note=rec.note;r.ver=ver+1;
+    audit("교육생 비고",r.name);api("tSave",{rec:{id:r.id,note:r.note},ver});render();if(!silent)undoBar(`${r.name} 비고 저장`,()=>saveTrainee(prev,true));return true;}
+  const name=(rec.name||"").trim(); if(!name){toast("이름을 입력하세요.");return false;}
+  if(d.roster.some(x=>x.name===name&&!x.archived&&x.id!==rec.id)){toast("같은 이름의 교육생이 있습니다. 구분 표기(예: 김하늘B)를 붙여 주세요.");return false;}
+  const fields={name,table:rec.table,status:rec.status,community:(rec.community||"").trim(),source:rec.source||"",note:(rec.note||"").trim(),updated:new Date().toISOString().slice(0,16).replace("T"," "),by:me().name};
+  if(!rec.id){const id="L"+Date.now().toString(36);d.roster.push({id,archived:false,ver:1,...fields});audit("교육생 등록",`${name} ${fields.table}`);
+    api("tSave",{rec:{...fields}});ADM.sel=id;ADM.draft=null;render();if(!silent)ADM.pendingName=name;undoBar(`${name} 등록`,()=>archiveTrainee(id,true,true,name));return true;}
+  const r=d.roster.find(x=>x.id===rec.id);if(!r){toast("교육생을 찾을 수 없습니다.");return false;}
+  const prev={...r},ver=r.ver||1,oldN=r.name,oldT=r.table;
+  Object.assign(r,fields,{ver:ver+1});
+  if(oldN!==name||oldT!==fields.table)relinkLocal(oldN,name,fields.table);
+  audit("교육생 수정",`${oldN!==name?oldN+"→":""}${name}${oldT!==fields.table?` ${oldT}→${fields.table}`:""}`);
+  api("tSave",{rec:{id:r.id,...fields},ver});ADM.draft=null;render();
+  if(!silent)undoBar(`${name} 저장`,()=>saveTrainee({...prev},true));return true;
+}
+function archiveTrainee(id,arch,silent,name){
+  const d=D(),r=d.roster.find(x=>x.id===id)||(name&&d.roster.find(x=>x.name===name&&!x.archived));if(!r)return;id=r.id;
+  if(!arch&&d.roster.some(x=>x.name===r.name&&!x.archived&&x.id!==id)){toast("같은 이름의 교육생이 있어 복원할 수 없습니다.");return;}
+  const ver=r.ver||1;r.archived=arch;r.ver=ver+1;audit(arch?"교육생 보관":"교육생 복원",r.name);api("tArchive",{id,archived:arch,ver});
+  if(arch&&ADM.sel===id)ADM.sel=null;render();if(!silent)undoBar(`${r.name} ${arch?"보관":"복원"}`,()=>archiveTrainee(id,!arch,true));
+}
+function saveSpeaker(rec,weeks,silent){
+  const d=D();d.speakers=d.speakers||[];
+  const name=(rec.name||"").trim();if(!name){toast("강사 이름을 입력하세요.");return false;}
+  const fields={name,title:rec.title||"",org:(rec.org||"").trim(),topics:(rec.topics||"").trim(),history:(rec.history||"").trim(),note:(rec.note||"").trim(),updated:new Date().toISOString().slice(0,16).replace("T"," ")};
+  let id=rec.id,ver=0,prev=null,prevWeeks=null;
+  if(!id){id="L"+Date.now().toString(36);d.speakers.push({id,archived:false,ver:1,...fields});ADM.pendingName=name;}
+  else{const s=d.speakers.find(x=>x.id===id);prev={...s};ver=s.ver||1;Object.assign(s,fields,{ver:ver+1});}
+  prevWeeks=d.weeks.filter(w=>w.speakerId===id).map(w=>w.no);
+  d.weeks.forEach((w,i)=>{
+    if(w.speakerId===id)w.speaker=name;
+    if(weeks){const on=weeks.includes(w.no);
+      if(on&&w.speakerId!==id){touch(i);const x=d.weeks[i];x.speakerId=id;x.speaker=name;if(x.sp==="미섭외")x.sp="섭외중";}
+      if(!on&&w.speakerId===id){touch(i);const x=d.weeks[i];x.speakerId="";x.speaker="";}}
+  });
+  audit(rec.id?"강사 수정":"강사 등록",name+(weeks?` (담당 ${weeks.join(",")||"없음"}주차)`:""));
+  api("spSave",{rec:{...fields,id:rec.id||""},ver,weeks});
+  ADM.sel=id;ADM.draft=null;ADM.preWeek=null;render();
+  if(!silent)undoBar(`${name} 저장`,()=>prev?saveSpeaker(prev,prevWeeks,true):archiveSpeaker(id,true,true,name));return true;
+}
+function archiveSpeaker(id,arch,silent,name){
+  const d=D(),s=(d.speakers||[]).find(x=>x.id===id)||(name&&(d.speakers||[]).find(x=>x.name===name&&!x.archived));if(!s)return;id=s.id;
+  const ver=s.ver||1;s.archived=arch;s.ver=ver+1;audit(arch?"강사 보관":"강사 복원",s.name);api("spArchive",{id,archived:arch,ver});
+  if(arch&&ADM.sel===id)ADM.sel=null;render();if(!silent)undoBar(`${s.name} ${arch?"보관":"복원"}`,()=>archiveSpeaker(id,!arch,true));
+}
+function saveStaff(rec,orig){
+  const d=D(),list=staffList(),email=(rec.email||"").trim().toLowerCase();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast("이메일 형식을 확인해 주세요.");return false;}
+  if(!(rec.name||"").trim()){toast("이름을 입력하세요.");return false;}
+  if(list.some(s=>s.email===email&&s.email!==orig)){toast("이미 등록된 이메일입니다.");return false;}
+  const table=rec.role==="TableLeader"?rec.table:"ALL";
+  const f={email,key:email,name:rec.name.trim(),role:rec.role,table,team:rec.team||"",active:!!rec.active};
+  let ver=0;
+  if(orig){const s=list.find(x=>x.email===orig);ver=s.ver||1;
+    if(orig===(me().email||"")&&(!f.active||f.role!=="TeamLeader")){toast("본인 계정의 팀장 권한이나 사용 여부는 바꿀 수 없습니다.");return false;}
+    const after=list.map(x=>x===s?f:x);if(!after.some(x=>x.role==="TeamLeader"&&x.active)){toast("사용 중인 팀장이 최소 1명 있어야 합니다.");return false;}
+    Object.assign(s,f,{ver:ver+1});}
+  else{d.staff=d.staff||[];d.staff.push({...f,ver:1});}
+  audit(orig?"운영진 수정":"운영진 등록",`${f.name} (${ROLE_KO[f.role]}${table!=="ALL"?" "+table:""})`);
+  api("stSave",{rec:f,orig:orig||"",ver});ADM.sel=email;ADM.draft=null;render();toast(`${f.name} 저장 완료`);return true;
+}
+function undoBar(msg,fn){
+  const u=$("undo");u.querySelector("span").textContent=msg;u.classList.add("on");
+  u._fn=fn;clearTimeout(u._h);u._h=setTimeout(()=>u.classList.remove("on"),6000);
+}
+
+/* ---------- bulk parse ---------- */
+function parseBulk(raw){
+  const d=D(),lines=raw.split(/\r?\n/).map(l=>l.replace(/\s+$/,"")).filter(l=>l.trim()),out=[],seen={};
+  lines.forEach((l,i)=>{
+    const c=(l.includes("\t")?l.split("\t"):l.split(",")).map(x=>x.trim());
+    if(i===0&&/^(이름|name|신청자)$/i.test(c[0]))return;
+    const name=c[0]||"",tv=String(c[1]||"").toUpperCase().replace(/조$/,"").replace(/^T/,""),table=/^[1-5]$/.test(tv)?"T"+tv:"";
+    const row={name,table,community:c[2]||"",note:c[3]||"",raw:l};
+    if(!name)row.st="err",row.msg="이름 없음";
+    else if(!table)row.st="err",row.msg=`Table 값 오류(${c[1]||"없음"})`;
+    else if(seen[name])row.st="err",row.msg="붙여넣기 안에서 중복";
+    else{const ex=d.roster.find(x=>x.name===name&&!x.archived);row.st=ex?"upd":"new";row.msg=ex?(ex.table!==table?`${ex.table}→${table}`:"공동체·비고 갱신"):"신규 등록";}
+    if(name)seen[name]=1;out.push(row);
+  });
+  return out;
+}
+function commitBulk(){
+  const d=D(),ok=ADM.bulk.filter(r=>r.st!=="err");if(!ok.length){toast("반영할 행이 없습니다.");return;}
+  let a=0,u=0;
+  ok.forEach(r=>{const ex=d.roster.find(x=>x.name===r.name&&!x.archived);
+    if(ex){const oldT=ex.table;Object.assign(ex,{table:r.table,community:r.community||ex.community,note:r.note||ex.note,ver:(ex.ver||1)+1});if(oldT!==r.table)relinkLocal(ex.name,ex.name,r.table);u++;}
+    else{d.roster.push({id:"L"+Date.now().toString(36)+a,name:r.name,table:r.table,status:"Registered",community:r.community,source:"",note:r.note,archived:false,ver:1});a++;}});
+  audit("일괄 입력",`신규 ${a} · 수정 ${u} · 제외 ${ADM.bulk.length-ok.length}`);
+  api("tBulk",{rows:ok.map(r=>({name:r.name,table:r.table,community:r.community,note:r.note}))});
+  toast(`일괄 입력 완료 · 신규 ${a}명 · 수정 ${u}명`);ADM.bulk=null;ADM.raw="";ADM.sub="t";render();
+}
+
+/* ---------- render ---------- */
+function rAdmin(){
+  const d=D(),p=P(),subs=admSubs();if(!subs.some(([k])=>k===ADM.sub))ADM.sub="t";
+  const ro=d.roster.filter(t=>!t.archived&&inScope(t.table)),lv=ro.filter(live);
+  const cnt=TABLES.filter(inScope).map(t=>lv.filter(x=>x.table===t).length);
+  const sps=(d.speakers||[]).filter(s=>!s.archived),linked=d.weeks.filter(w=>w.speakerId).length;
+  let m,why;
+  if(me().role==="TableLeader"){m=`${me().table} 교육생 ${lv.length}명 → 연락·후속조치에 필요한 비고만 직접 수정할 수 있습니다`;why="이름·Table·등록상태 변경은 팀장·총무에게 요청합니다.";}
+  else if(!lv.length){m="등록된 교육생이 없습니다 → 「일괄 입력」에 엑셀 명단을 붙여넣어 한 번에 등록하세요";why="형식: 이름, Table(1~5 또는 T1~T5), 공동체, 비고. 등록 후 「조편성」에서 Table을 옮길 수 있습니다.";}
+  else{const gap=Math.max(...cnt)-Math.min(...cnt);
+    m=`교육생 ${lv.length}명 · Table당 ${Math.min(...cnt)}~${Math.max(...cnt)}명, 강사 ${sps.length}명(10주 중 ${linked}주 연결) → ${linked<10?`미연결 ${10-linked}개 주차의 강사를 「강사」에서 연결해야 합니다`:gap>1?`Table 인원 편차 ${gap}명을 「조편성」에서 맞춥니다`:"명단 준비가 끝났습니다. 변경 사항만 수정합니다"}`;
+    why=`저장하면 ${GAS?"운영 시트에 바로 반영되어 모든 운영진 화면에 보입니다":"이 브라우저에만 반영됩니다(시뮬레이션)"}. 저장 직후 6초 동안 되돌릴 수 있고, 삭제는 보관함으로 이동합니다.`;}
+  $("admHead").innerHTML=`<p>${esc(m)}</p><div class="why">${esc(why)}</div>`;
+  $("admSub").innerHTML=subs.map(([k,l])=>`<button class="chip" data-adm="sub" data-k="${k}" aria-pressed="${ADM.sub===k}">${l}${k==="ar"?` ${d.roster.filter(x=>x.archived).length+(d.speakers||[]).filter(x=>x.archived).length}`:""}</button>`).join("");
+  ({t:admTrainee,g:admGroup,s:admSpeaker,st:admStaff,b:admBulk,ar:admArchive})[ADM.sub]();
+}
+function editorShell(title,body,foot){return `<h2>${title}</h2>${body}<div class="admfoot">${foot}</div>`;}
+function admTrainee(){
+  const d=D(),p=P(),q=ADM.q.trim();
+  let list=d.roster.filter(t=>!t.archived&&inScope(t.table));
+  if(ADM.tf!=="all")list=list.filter(t=>t.table===ADM.tf);
+  if(ADM.sf==="live")list=list.filter(live);else if(ADM.sf!=="all")list=list.filter(t=>t.status===ADM.sf);
+  if(q)list=list.filter(t=>(t.name+t.community+t.note).includes(q));
+  list.sort((a,b)=>a.table.localeCompare(b.table)||a.name.localeCompare(b.name,"ko"));
+  const tabs=TABLES.filter(inScope);
+  $("admBody").innerHTML=`<div class="admgrid"><div class="box">
+    <div class="admbar"><input type="search" data-adm="q" value="${esc(ADM.q)}" placeholder="이름·공동체·비고 검색" aria-label="검색">
+      ${tabs.length>1?`<select data-adm="tf" aria-label="Table"><option value="all">전체 Table</option>${tabs.map(t=>`<option ${ADM.tf===t?"selected":""}>${t}</option>`).join("")}</select>`:""}
+      <select data-adm="sf" aria-label="등록상태"><option value="live" ${ADM.sf==="live"?"selected":""}>등록·수강 중</option><option value="all" ${ADM.sf==="all"?"selected":""}>전체 상태</option>${STATUS.map(s=>`<option value="${s}" ${ADM.sf===s?"selected":""}>${ST_KO[s]}</option>`).join("")}</select>
+      ${p.tEdit?`<button class="btn pri" data-adm="newT">＋ 교육생 추가</button>`:""}</div>
+    <div class="tscroll"><table class="dt"><thead><tr><th>이름</th><th>Table</th><th>상태</th><th>공동체</th><th>비고</th></tr></thead><tbody>${list.map(t=>`<tr class="pick${ADM.sel===t.id?" cur":""}" data-adm="selT" data-id="${t.id}" tabindex="0"><td><b>${esc(t.name)}</b></td><td>${t.table}</td><td><span class="pill ${live(t)?"fLikely":"None"}">${ST_KO[t.status]||t.status}</span></td><td>${esc(t.community||"")}</td><td class="muted">${esc((t.note||"").slice(0,24))}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">조건에 맞는 교육생이 없습니다.</td></tr>`}</tbody></table></div>
+    <div class="muted" style="padding-top:8px">${list.length}명 표시</div></div>
+    <div class="box" id="admEd"></div></div>`;
+  const ed=$("admEd"),sel=ADM.sel==="new"?{id:"",name:"",table:ADM.tf!=="all"?ADM.tf:tabs[0],status:"Registered",community:"",source:"",note:""}:d.roster.find(x=>x.id===ADM.sel&&!x.archived);
+  if(!sel){ed.innerHTML=`<h2>교육생 정보</h2><p class="empty">목록에서 교육생을 선택하세요.${p.tEdit?" 새 교육생은 「＋ 교육생 추가」를 누릅니다.":""}</p>`;return;}
+  const r=ADM.draft&&ADM.draft.id===sel.id&&ADM.draft.kind==="t"?{...sel,...ADM.draft}:sel,full=p.tEdit,dis=full?"":"disabled";
+  const hist=d.audit.filter(a=>sel.name&&String(a.d).includes(sel.name)).slice(0,4);
+  ed.innerHTML=editorShell(sel.id?esc(sel.name):"새 교육생",`<form id="admForm" data-kind="t" class="form" style="grid-template-columns:1fr 1fr" novalidate>
+    <label class="w2">이름<input name="name" value="${esc(r.name)}" maxlength="20" ${dis} required></label>
+    <label>Table<select name="table" ${dis}>${TABLES.map(t=>`<option ${r.table===t?"selected":""}>${t}</option>`).join("")}</select></label>
+    <label>등록상태<select name="status" ${dis}>${STATUS.map(s=>`<option value="${s}" ${r.status===s?"selected":""}>${ST_KO[s]}</option>`).join("")}</select></label>
+    <label>공동체<input name="community" value="${esc(r.community||"")}" maxlength="30" ${dis}></label>
+    <label>신청경로<select name="source" ${dis}><option value="">-</option>${SOURCES.map(s=>`<option ${r.source===s?"selected":""}>${s}</option>`).join("")}</select></label>
+    <label class="w2">비고 (연락·후속조치에 필요한 최소정보)<textarea name="note" maxlength="80" ${full||p.tNote?"":"disabled"}>${esc(r.note||"")}</textarea></label>
+    <input type="hidden" name="id" value="${sel.id}"></form>
+    ${sel.id&&(sel.updated||hist.length)?`<div class="muted">${sel.updated?`최근 수정 ${fmtTs(sel.updated)} ${esc(sel.by||"")}`:""}${hist.length?`<br>${hist.map(h=>`${h.ts.slice(5,16)} ${esc(h.user)} · ${esc(h.a)}`).join("<br>")}`:""}</div>`:""}`,
+    (full||p.tNote)?`<button class="btn pri" data-adm="saveT">저장</button><button class="btn" data-adm="cancel">취소</button>${sel.id&&full?`<button class="btn warn" data-adm="archT" data-id="${sel.id}" style="margin-left:auto">보관</button>`:""}`:`<span class="muted">조회 전용 계정입니다.</span>`);
+}
+function admGroup(){
+  const d=D(),lv=d.roster.filter(t=>!t.archived&&live(t));
+  const cnt=TABLES.map(t=>lv.filter(x=>x.table===t).length),gap=Math.max(...cnt)-Math.min(...cnt);
+  $("admBody").innerHTML=`<div class="box"><div class="boxhd"><div><h2>조편성</h2><p class="sub">카드를 다른 Table로 끌어다 놓거나, 카드를 누른 뒤 옮길 Table을 누릅니다(휴대폰). 옮기면 주간 Care·과제 기록도 함께 이동합니다.</p></div>
+    <span class="st ${gap>1?"over":"ok"}">인원 편차 ${gap}명</span></div>
+    <div class="grp">${TABLES.map((t,i)=>`<div class="gcol${ADM.pick?" target":""}" data-adm="drop" data-t="${t}"><div class="gh"><b>${t}</b><span class="muted">${esc(LEADER[t]||"리더 미지정")} · ${cnt[i]}명</span>${ADM.pick&&(lv.find(x=>x.id===ADM.pick)||{}).table!==t?`<button type="button" class="btn pri" data-adm="drop" data-t="${t}" style="margin-top:6px">여기로 이동</button>`:""}</div>
+      ${lv.filter(x=>x.table===t).sort((a,b)=>a.name.localeCompare(b.name,"ko")).map(x=>`<button class="gchip${ADM.pick===x.id?" on":""}" draggable="true" data-adm="pick" data-id="${x.id}" aria-pressed="${ADM.pick===x.id}">${esc(x.name)}${x.community?`<small>${esc(x.community)}</small>`:""}</button>`).join("")||`<div class="empty">비어 있음</div>`}</div>`).join("")}</div>
+    ${ADM.pick?`<div class="note" style="margin:12px 0 0">${esc((lv.find(x=>x.id===ADM.pick)||{}).name||"")} 선택됨 — 옮길 Table의 「여기로 이동」을 누르세요. <button class="link" data-adm="unpick">선택 취소</button></div>`:""}</div>`;
+}
+function admSpeaker(){
+  const d=D(),p=P(),sps=(d.speakers||[]).filter(s=>!s.archived).sort((a,b)=>a.name.localeCompare(b.name,"ko"));
+  const wOf=id=>d.weeks.filter(w=>w.speakerId===id);
+  $("admBody").innerHTML=`<div class="admgrid"><div class="box"><div class="admbar"><h2 style="margin:0;flex:1">강사 목록</h2>${p.spEdit?`<button class="btn pri" data-adm="newS">＋ 강사 등록</button>`:""}</div>
+    <div class="tscroll"><table class="dt"><thead><tr><th>이름</th><th>소속</th><th>담당 주차</th><th>강의 주제</th></tr></thead><tbody>${sps.map(s=>`<tr class="pick${ADM.sel===s.id?" cur":""}" data-adm="selS" data-id="${s.id}" tabindex="0"><td><b>${esc(s.name)}</b> <span class="muted">${esc(s.title||"")}</span></td><td>${esc(s.org||"")}</td><td>${wOf(s.id).map(w=>`<span class="pill fLikely">${w.no}주</span>`).join(" ")||`<span class="muted">-</span>`}</td><td class="muted">${esc((s.topics||"").slice(0,30))}</td></tr>`).join("")||`<tr><td colspan="4" class="empty">등록된 강사가 없습니다.</td></tr>`}</tbody></table></div>
+    <h3>주차별 강사 연결</h3><div class="wkline">${d.weeks.map(w=>`<span class="${w.speakerId?"on":""}" title="${w.no}주차 ${esc(w.topic)}">${w.no}<small>${esc(w.speaker||"미정")}</small></span>`).join("")}</div></div>
+    <div class="box" id="admEd"></div></div>`;
+  const ed=$("admEd"),sel=ADM.sel==="new"?{id:"",name:"",title:"목사",org:"",topics:ADM.preWeek?d.weeks[ADM.preWeek-1].topic:"",history:"",note:""}:sps.find(x=>x.id===ADM.sel);
+  if(!sel){ed.innerHTML=`<h2>강사 정보</h2><p class="empty">목록에서 강사를 선택하세요.${p.spEdit?" 새 강사는 「＋ 강사 등록」을 누릅니다.":""}</p>`;return;}
+  const r=ADM.draft&&ADM.draft.id===sel.id&&ADM.draft.kind==="s"?{...sel,...ADM.draft}:sel,dis=p.spEdit?"":"disabled";
+  const mine=sel.id?wOf(sel.id).map(w=>w.no):(ADM.preWeek?[ADM.preWeek]:[]);
+  const chk=ADM.draft&&ADM.draft.kind==="s"&&ADM.draft.id===sel.id&&ADM.draft.weeks?ADM.draft.weeks:mine;
+  ed.innerHTML=editorShell(sel.id?esc(sel.name):"새 강사",`<form id="admForm" data-kind="s" class="form" style="grid-template-columns:1fr 1fr" novalidate>
+    <label>이름<input name="name" value="${esc(r.name)}" maxlength="30" ${dis}></label>
+    <label>직분<input name="title" list="titleList" value="${esc(r.title||"")}" maxlength="20" ${dis}><datalist id="titleList">${TITLES.map(t=>`<option>${t}</option>`).join("")}</datalist></label>
+    <label class="w2">소속<input name="org" value="${esc(r.org||"")}" maxlength="30" ${dis}></label>
+    <label class="w2">강의 주제·전문 분야<input name="topics" value="${esc(r.topics||"")}" maxlength="80" ${dis}></label>
+    <label class="w2">강의 이력<textarea name="history" maxlength="200" ${dis} placeholder="예: 2025 2주차 '역동적인 순장'">${esc(r.history||"")}</textarea></label>
+    <label class="w2">비고 (연락처는 적지 않습니다)<input name="note" value="${esc(r.note||"")}" maxlength="120" ${dis}></label>
+    <fieldset class="w2 wkpick"><legend>담당 주차</legend>${d.weeks.map(w=>{const other=w.speakerId&&w.speakerId!==sel.id;return `<label class="wk"><input type="checkbox" name="wk" value="${w.no}" ${chk.includes(w.no)?"checked":""} ${dis}><span><b>${w.no}주차</b> ${fmt(d2n(w.date))}<small>${esc(w.topic)}${other?` · 현재 ${esc(w.speaker)}`:""}</small></span></label>`;}).join("")}</fieldset>
+    <input type="hidden" name="id" value="${sel.id}"></form>`,
+    p.spEdit?`<button class="btn pri" data-adm="saveS">저장</button><button class="btn" data-adm="cancel">취소</button>${sel.id?`<button class="btn warn" data-adm="archS" data-id="${sel.id}" style="margin-left:auto">보관</button>`:""}`:`<span class="muted">조회 전용 계정입니다.</span>`);
+}
+function admStaff(){
+  const p=P(),list=staffList().slice().sort((a,b)=>["TeamLeader","Secretary","Pastor","TableLeader"].indexOf(a.role)-["TeamLeader","Secretary","Pastor","TableLeader"].indexOf(b.role)||(a.table||"").localeCompare(b.table||""));
+  const tv=teamsView(),extra=D().teams||{};
+  $("admBody").innerHTML=`<div class="admgrid"><div class="box"><div class="admbar"><h2 style="margin:0;flex:1">운영진 계정</h2>${p.stEdit?`<button class="btn pri" data-adm="newSt">＋ 운영진 등록</button>`:""}</div>
+    <p class="sub">${p.stEdit?"여기 등록된 이메일만 인증코드 로그인이 됩니다. 사용을 끄면 그 계정의 로그인도 즉시 끊깁니다.":"운영진 구성입니다. 계정 관리는 팀장이 합니다."}</p>
+    <div class="tscroll"><table class="dt"><thead><tr><th>이름</th><th>역할</th><th>Table</th><th>팀</th>${p.stEdit?"<th>이메일</th>":""}<th>사용</th></tr></thead><tbody>${list.map(s=>`<tr class="${p.stEdit?"pick":""}${ADM.sel===s.key?" cur":""}" ${p.stEdit?`data-adm="selSt" data-id="${esc(s.key)}" tabindex="0"`:""}><td><b>${esc(s.name)}</b></td><td>${ROLE_KO[s.role]||s.role}</td><td>${s.table==="ALL"?"-":s.table}</td><td>${esc(s.team||"-")}</td>${p.stEdit?`<td class="muted">${esc(s.email)}</td>`:""}<td>${s.active?`<span class="ok">●</span>`:`<span class="muted">중지</span>`}</td></tr>`).join("")}</tbody></table></div>
+    <h3>팀 구성</h3><table class="dt"><tbody>${TEAMS_ALL.map(t=>`<tr><td style="white-space:nowrap">${t}</td><td>${esc(tv[t].join(", ")||"계정 배정 없음")}${extra[t]?` <span class="muted">+ ${esc(extra[t])}</span>`:""}</td></tr>`).join("")}</tbody></table></div>
+    <div class="box" id="admEd"></div></div>`;
+  const ed=$("admEd");
+  if(!p.stEdit){ed.innerHTML=`<h2>로그인 안내</h2><p class="sub">운영 대시보드 주소를 열고 등록된 이메일을 입력하면 6자리 인증코드가 메일로 옵니다. 한 번 로그인하면 14일 동안 유지됩니다.</p>`;return;}
+  const sel=ADM.sel==="new"?{key:"",email:"",name:"",role:"TableLeader",table:"T1",team:"",active:true}:list.find(x=>x.key===ADM.sel);
+  if(!sel){ed.innerHTML=`<h2>운영진 정보</h2><p class="empty">목록에서 운영진을 선택하거나 「＋ 운영진 등록」을 누르세요.</p>`;return;}
+  const r=ADM.draft&&ADM.draft.kind==="st"&&ADM.draft.key===sel.key?{...sel,...ADM.draft}:sel;
+  ed.innerHTML=editorShell(sel.key?esc(sel.name):"새 운영진",`<form id="admForm" data-kind="st" class="form" style="grid-template-columns:1fr 1fr" novalidate>
+    <label class="w2">로그인 이메일 (Gmail 등 개인 메일 가능)<input name="email" type="email" value="${esc(r.email)}" maxlength="80"></label>
+    <label>이름<input name="name" value="${esc(r.name)}" maxlength="20"></label>
+    <label>역할<select name="role">${["TeamLeader","Secretary","TableLeader","Pastor"].map(x=>`<option value="${x}" ${r.role===x?"selected":""}>${ROLE_KO[x]}</option>`).join("")}</select></label>
+    <label>담당 Table (테이블리더)<select name="table">${TABLES.map(t=>`<option ${r.table===t?"selected":""}>${t}</option>`).join("")}</select></label>
+    <label>소속 팀<select name="team"><option value="">-</option>${TEAMS_ALL.map(t=>`<option ${r.team===t?"selected":""}>${t}</option>`).join("")}</select></label>
+    <label class="w2 inl"><input type="checkbox" name="active" ${r.active?"checked":""}> 사용 (끄면 로그인 불가)</label>
+    <input type="hidden" name="key" value="${esc(sel.key)}"></form>`,
+    `<button class="btn pri" data-adm="saveSt">저장</button><button class="btn" data-adm="cancel">취소</button>`);
+}
+function admBulk(){
+  const b=ADM.bulk,n=k=>b?b.filter(r=>r.st===k).length:0;
+  $("admBody").innerHTML=`<div class="box"><h2>교육생 일괄 입력</h2><p class="sub">엑셀에서 「이름 · Table · 공동체 · 비고」 열을 복사해 붙여넣습니다. Table은 1~5, T1~T5, 1조 모두 됩니다. 이미 있는 이름은 Table·공동체·비고만 갱신합니다.</p>
+    <textarea id="bulkRaw" class="bulk" placeholder="이름	Table	공동체	비고
+홍길순	2	화평 공동체
+김철수	T3	사랑 공동체	목요일 통화">${esc(ADM.raw)}</textarea>
+    <div class="admbar" style="margin-top:10px"><button class="btn" data-adm="parse">미리보기</button>${b?`<button class="btn pri" data-adm="commit" ${n("new")+n("upd")?"":"disabled"}>반영 (신규 ${n("new")} · 수정 ${n("upd")})</button><span class="muted">오류 ${n("err")}행은 제외됩니다</span>`:""}</div>
+    ${b?`<div class="tscroll" style="margin-top:12px"><table class="dt"><thead><tr><th>판정</th><th>이름</th><th>Table</th><th>공동체</th><th>비고</th><th>내용</th></tr></thead><tbody>${b.map(r=>`<tr><td>${r.st==="new"?"🟢 신규":r.st==="upd"?"🟡 수정":"🔴 오류"}</td><td>${esc(r.name)}</td><td>${r.table||"-"}</td><td>${esc(r.community)}</td><td>${esc(r.note)}</td><td class="muted">${esc(r.msg)}</td></tr>`).join("")}</tbody></table></div>`:""}</div>`;
+}
+function admArchive(){
+  const d=D(),p=P(),ts=d.roster.filter(x=>x.archived&&inScope(x.table)),ss=(d.speakers||[]).filter(x=>x.archived);
+  $("admBody").innerHTML=`<div class="g2e"><div class="box"><h2>보관된 교육생</h2><p class="sub">보관하면 집계에서 빠지고, 복원하면 기록과 함께 돌아옵니다.</p>
+    ${ts.length?`<table class="dt"><tbody>${ts.map(t=>`<tr><td><b>${esc(t.name)}</b> <span class="muted">${t.table}</span></td><td class="muted">${fmtTs(t.updated)}</td><td>${p.tEdit?`<button class="btn" data-adm="restT" data-id="${t.id}">복원</button>`:""}</td></tr>`).join("")}</tbody></table>`:`<p class="empty">없음</p>`}</div>
+    <div class="box"><h2>보관된 강사</h2>${ss.length?`<table class="dt"><tbody>${ss.map(s=>`<tr><td><b>${esc(s.name)}</b> <span class="muted">${esc(s.title||"")}</span></td><td>${p.spEdit?`<button class="btn" data-adm="restS" data-id="${s.id}">복원</button>`:""}</td></tr>`).join("")}</tbody></table>`:`<p class="empty">없음</p>`}</div></div>`;
+}
+
+/* ---------- admin events ---------- */
+function formObj(){const f=$("admForm");if(!f)return null;const o={kind:f.dataset.kind};new FormData(f).forEach((v,k)=>{if(k==="wk")(o.weeks=o.weeks||[]).push(+v);else o[k]=v;});
+  if(o.kind==="s"&&!o.weeks)o.weeks=[];if(o.kind==="st")o.active=!!f.querySelector("[name=active]").checked;return o;}
+document.addEventListener("click",e=>{
+  const u=e.target.closest("#undo button");if(u){const b=$("undo");b.classList.remove("on");if(b._fn){const f=b._fn;b._fn=null;f();toast("되돌렸습니다.");}return;}
+  const el=e.target.closest("[data-adm]");if(!el||el.tagName==="INPUT"||el.tagName==="SELECT")return;
+  const a=el.dataset.adm,id=el.dataset.id;
+  switch(a){
+   case "sub":ADM.sub=el.dataset.k;ADM.sel=null;ADM.draft=null;ADM.pick=null;rAdmin();break;
+   case "selT":case "selS":case "selSt":ADM.sel=id;ADM.draft=null;rAdmin();if(innerWidth<960)$("admEd").scrollIntoView({block:"start",behavior:"smooth"});break;
+   case "newT":case "newS":case "newSt":ADM.sel="new";ADM.draft=null;rAdmin();$("admEd").scrollIntoView({block:"nearest"});const i=$("admForm").querySelector("input:not([type=hidden])");i&&i.focus();break;
+   case "cancel":ADM.sel=null;ADM.draft=null;ADM.preWeek=null;rAdmin();break;
+   case "saveT":{const o=formObj();saveTrainee({...o,id:o.id||undefined});break;}
+   case "saveS":{const o=formObj();saveSpeaker({...o,id:o.id||undefined},o.weeks);break;}
+   case "saveSt":{const o=formObj();saveStaff(o,o.key||"");break;}
+   case "archT":if(confirm("이 교육생을 보관합니다. 집계에서 빠지며 보관함에서 복원할 수 있습니다."))archiveTrainee(id,true);break;
+   case "archS":{const n=D().weeks.filter(w=>w.speakerId===id).length;if(confirm(n?`담당 주차 ${n}개가 있습니다. 보관해도 주차의 강사 이름은 남습니다. 보관할까요?`:"이 강사를 보관합니다."))archiveSpeaker(id,true);break;}
+   case "restT":archiveTrainee(id,false);break;
+   case "restS":archiveSpeaker(id,false);break;
+   case "pick":ADM.pick=ADM.pick===id?null:id;rAdmin();break;
+   case "unpick":ADM.pick=null;rAdmin();break;
+   case "drop":if(ADM.pick)moveTo(ADM.pick,el.dataset.t);break;
+   case "parse":ADM.raw=$("bulkRaw").value;ADM.bulk=parseBulk(ADM.raw);rAdmin();break;
+   case "commit":commitBulk();break;
+  }
+});
+function moveTo(id,t){const r=D().roster.find(x=>x.id===id);ADM.pick=null;if(!r||r.table===t){rAdmin();return;}saveTrainee({...r,table:t});}
+document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".gchip");if(c){e.dataTransfer.setData("text/plain",c.dataset.id);e.dataTransfer.effectAllowed="move";}});
+document.addEventListener("dragover",e=>{const g=e.target.closest&&e.target.closest(".gcol");if(g){e.preventDefault();g.classList.add("over");}});
+document.addEventListener("dragleave",e=>{const g=e.target.closest&&e.target.closest(".gcol");if(g)g.classList.remove("over");});
+document.addEventListener("drop",e=>{const g=e.target.closest&&e.target.closest(".gcol");if(g){e.preventDefault();moveTo(e.dataTransfer.getData("text/plain"),g.dataset.t);}});
+document.addEventListener("input",e=>{
+  const el=e.target;
+  if(el.dataset&&el.dataset.adm==="q"){ADM.q=el.value;const pos=el.selectionStart;rAdmin();const n=document.querySelector('[data-adm="q"]');n.focus();n.setSelectionRange(pos,pos);return;}
+  if(el.closest&&el.closest("#admForm")){const o=formObj();ADM.draft={...o,id:o.id||"",key:o.key||""};if(o.kind==="st")ADM.draft.key=o.key||"";}
+  if(el.id==="bulkRaw")ADM.raw=el.value;
+});
+document.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.dataset&&(el.dataset.adm==="tf"||el.dataset.adm==="sf")){ADM[el.dataset.adm]=el.value;rAdmin();return;}
+  if(el.closest&&el.closest("#admForm")){const o=formObj();ADM.draft={...o,id:o.id||"",key:o.key||""};}
+  if(el.dataset&&el.dataset.act==="wkSp"){
+    const i=+el.dataset.i;
+    if(el.value==="__new"){ADM={...ADM,sub:"s",sel:"new",draft:null,preWeek:i+1};go("admin");return;}
+    const w=touch(i),s=(D().speakers||[]).find(x=>x.id===el.value);
+    w.speakerId=s?s.id:"";w.speaker=s?s.name:"";if(s&&w.sp==="미섭외")w.sp="섭외중";
+    audit("주차 강사",`${w.no}주차 → ${s?s.name:"미정"}`);api("wkSpeaker",{i,speakerId:w.speakerId});render();
+  }
+});
+document.addEventListener("keydown",e=>{const r=e.target.closest&&e.target.closest("tr.pick");if(r&&e.key==="Enter"){r.click();}});
+
+/* ================= EVENTS ================= */
+function touch(i){const w=D().weeks[i],c=C.weeks[i];if(!w.touched){w.ppt=c.ppt;w.prep=[...c.prep];w.thanks=c.thanks;w.touched=true;}return w;}
+$("roleSel").addEventListener("change",e=>{S.roleIdx=+e.target.value;S.sel=null;S.mine=null;render();toast(`${ROLE_KO[me().role]} 계정으로 전환`);});
+document.querySelector(".env").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.env=b.dataset.env;S.sel=null;render();});
+$("tDate").addEventListener("change",e=>{if(e.target.value){S.T=e.target.value;render();}});
+$("tToday").addEventListener("click",()=>{S.T=null;render();});
+$("tJump").addEventListener("change",e=>{if(e.target.value){S.T=e.target.value;render();toast(`${fmtL(d2n(S.T))} 기준으로 이동`);}});
+$("tabBar").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab);});
+$("tabBar").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft"].includes(e.key))return;const t=P().tabs,i=t.indexOf(S.tab);go(t[(i+(e.key==="ArrowRight"?1:t.length-1))%t.length]);document.querySelector(`[data-tab="${S.tab}"]`).focus();});
+$("careForm").addEventListener("submit",submitCare);
+document.body.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]");if(!el)return;
+  const a=el.dataset.act,d=D();
+  if(el.tagName==="INPUT"||el.tagName==="SELECT"||el.tagName==="TEXTAREA")return;
+  switch(a){
+   case "task":{if(el.disabled)return;const k=el.dataset.k;d.tasks[k]=!(el.getAttribute("aria-pressed")==="true");audit("사이클 체크",`${k} → ${d.tasks[k]?"완료":"해제"}`);api("task",{k,v:d.tasks[k]});render();break;}
+   case "tpl":openTpl(el.dataset.k,el.dataset.w?+el.dataset.w:null);break;
+   case "closeModal":$("ovl").classList.remove("on");break;
+   case "copyModal":{const t=$("mText");const done=()=>{toast("복사했습니다.");$("ovl").classList.remove("on");};
+     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();try{document.execCommand("copy");done();}catch(_){toast("Ctrl+C로 복사하세요.");}});else{t.select();try{document.execCommand("copy");done();}catch(_){toast("Ctrl+C로 복사하세요.");}}break;}
+   case "mine":S.mine=!mineOn();render();break;
+   case "go":go(el.dataset.t);break;
+   case "goDD":S.ddW=+el.dataset.w;go("dday");break;
+   case "seat":if(!el.hasAttribute("tabindex"))return;S.sel=S.sel===el.dataset.n?null:el.dataset.n;rPerson();save();break;
+   case "closeP":S.sel=null;rPerson();save();break;
+   case "inputFor":S.sel=el.dataset.n;go("care");setTimeout(()=>$("inputBox").scrollIntoView({block:"start"}),50);break;
+   case "prep":{if(el.disabled)return;const w=touch(+el.dataset.i),j=+el.dataset.j;w.prep[j]=(w.prep[j]+1)%4;audit("준비물",`${w.no}주차 ${PREP[j]} → ${PSTAT[w.prep[j]]}`);api("prep",{i:+el.dataset.i,j,v:w.prep[j]});render();break;}
+   case "recalcDates":if(confirm(`개강일 ${d.cfg.open} 기준으로 10주 날짜를 7일 간격으로 다시 계산합니다.`)){const o=d2n(d.cfg.open);d.weeks.forEach((w,i)=>w.date=n2s(o+7*i));audit("날짜 재계산",d.cfg.open);api("recalc",{});render();}break;
+   case "ddw":S.ddW=+el.dataset.w;render();break;
+   case "dd":{if(el.disabled)return;const no=S.ddW||(C.focal?C.focal.no:10),lg=ddLog(no),i=+el.dataset.i;lg.it[i]=lg.it[i]||{};lg.it[i].done=!lg.it[i].done;audit("D-Day 체크",`${no}주차 ${DDAY[i][1]} → ${lg.it[i].done?"완료":"해제"}`);api("dd",{no,i,done:lg.it[i].done});render();break;}
+   case "careF":S.careF=el.dataset.k;render();break;
+   case "gradF":S.gradF=el.dataset.k;render();break;
+   case "seg":{F[el.dataset.g]=el.dataset.v;if(el.dataset.g==="att"&&el.dataset.v==="Absent"&&F.sig==="Green"){}document.querySelectorAll(`[data-act="seg"][data-g="${el.dataset.g}"]`).forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===F[el.dataset.g]));break;}
+   case "cs":{const n=el.dataset.n,s=el.dataset.s,st=d.cases[n]||{stage:"신규",esc:false,closedW:0};st.stage=s;if(s==="종결")st.closedW=C.elapsed;d.cases[n]=st;audit(me().role==="Pastor"?"교역자 Review 완료":"Care 단계 변경",`${n} → ${s}`);api("caseStage",{name:n,stage:s});render();toast(`${n} → ${s}`);break;}
+   case "esc":{const n=el.dataset.n,st=d.cases[n]||{stage:"신규",esc:false,closedW:0};st.esc=true;st.stage="연락·면담 중";d.cases[n]=st;audit("교역자 연결",`${n} Red Escalation`);api("escalate",{name:n});render();toast(`${n} 교역자 연결`);break;}
+   case "adj":{const n=el.dataset.n,k=el.dataset.k,dd=+el.dataset.d,p=C.people.find(x=>x.name===n);if(p&&p.req[k][0]+dd<0)return;d.alog=d.alog||[];const w=C.elapsed;d.alog.push({name:n,k,w,d:dd});audit("과제 실적",`${n} ${k} ${dd>0?"+1":"−1"}`);api("adj",{name:n,k,delta:dd,w});render();break;}
+   case "resetAll":if(confirm("모든 입력·체크·설정을 지우고 초기 상태로 되돌립니다.")){const keepT=S.T;S=fresh();S.T=keepT;render();toast("초기화했습니다.");}break;
+  }
+});
+document.body.addEventListener("keydown",e=>{if(e.key==="Escape")$("ovl").classList.remove("on");const g=e.target.closest&&e.target.closest(".seat");if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();g.dispatchEvent(new MouseEvent("click",{bubbles:true}));}});
+document.body.addEventListener("change",e=>{
+  const el=e.target,a=el.dataset.act,d=D();
+  if(el.name==="table"&&el.form&&el.form.id==="careForm"){fillNames(el.value);return;}
+  if(!a)return;
+  switch(a){
+   case "wk":{const w=touch(+el.dataset.i),f=el.dataset.f;if(f==="date"&&!el.value)return;w[f]=el.value.trim?el.value.trim():el.value;audit("주차 Board",`${w.no}주차 ${f} → ${w[f]}`);api("wk",{i:+el.dataset.i,f,v:w[f]});render();break;}
+   case "ms":d.ms[el.dataset.id]=el.value;api("ms",{id:el.dataset.id,st:el.value});audit("마일스톤",`${el.dataset.id} → ${el.value}`);render();break;
+   case "prepPlan":d.prep[el.dataset.i]=el.checked;api("prepPlan",{i:+el.dataset.i,v:el.checked});audit("개강 준비",`${PREPLAN[+el.dataset.i]} → ${el.checked?"완료":"해제"}`);render();break;
+   case "bud":{const x=d.budget[+el.dataset.i];x[el.dataset.f]=el.dataset.f==="st"?el.value:Math.max(0,+el.value||0);api("bud",{i:+el.dataset.i,f:el.dataset.f,v:x[el.dataset.f]});render();break;}
+   case "official":d.official[el.dataset.n]=el.value;api("official",{name:el.dataset.n,v:el.value});audit("공식 판정",`${el.dataset.n} → ${el.value}`);save();toast(`${el.dataset.n} 공식 판정: ${el.value}`);break;
+   case "team":d.teams[el.dataset.k]=el.value.trim();api("team",{k:el.dataset.k,v:d.teams[el.dataset.k]});save();break;
+   case "cfg":{const k=el.dataset.k;if(k==="open"){if(!el.value)return;const o=d2n(el.value);if(confirm(`개강일을 ${fmtL(o)}로 바꾸고 10주 날짜를 다시 계산할까요?`)){d.cfg.open=el.value;d.weeks.forEach((w,i)=>w.date=n2s(o+7*i));audit("개강일 변경",el.value);api("cfg",{k:"open",v:el.value});}render();return;}
+     d.cfg[k]=k==="excAbs"?el.value==="true":el.value;api("cfg",{k,v:el.value});audit("설정",`${k} → ${el.value}`);render();break;}
+   case "crit":d.cfg.crit[el.dataset.k]=Math.max(0,+el.value||0);api("crit",{k:el.dataset.k,v:d.cfg.crit[el.dataset.k]});audit("수료 기준",`${el.dataset.k} → ${el.value}`);render();break;
+   case "ddIssue":{const no=S.ddW||(C.focal?C.focal.no:10);api("ddIssue",{no,i:+el.dataset.i,issue:el.value});break;}
+   case "db":{const no=S.ddW||(C.focal?C.focal.no:10);api("db",{no,k:el.dataset.k,v:el.value});break;}
+  }
+});
+document.body.addEventListener("input",e=>{
+  const el=e.target,a=el.dataset.act;
+  if(a==="ddIssue"){const no=S.ddW||(C.focal?C.focal.no:10),lg=ddLog(no),i=+el.dataset.i;lg.it[i]=lg.it[i]||{};lg.it[i].issue=el.value;save();}
+  if(a==="db"){const no=S.ddW||(C.focal?C.focal.no:10);ddLog(no).db[el.dataset.k]=el.value;save();}
+});
+$("ovl").addEventListener("click",e=>{if(e.target.id==="ovl")$("ovl").classList.remove("on");});
+/* ================= SERVER SYNC (Apps Script) ================= */
+const TOKKEY="sunjang-tok";
+let TOK="";try{TOK=localStorage.getItem(TOKKEY)||"";}catch(e){}
+function setTok(t){TOK=t||"";try{t?localStorage.setItem(TOKKEY,t):localStorage.removeItem(TOKKEY);}catch(e){}}
+function api(op,p){
+  if(!GAS)return;
+  syncing++;
+  google.script.run.withSuccessHandler(r=>{syncing--;if(r&&r.data)applyData(r.data);})
+   .withFailureHandler(err=>{syncing--;const m=String(err&&err.message||err);
+     if(m.includes("로그인이 필요")){setTok("");showLogin("로그인이 만료되었습니다. 다시 로그인해 주세요.");return;}
+     toast(m.includes("CONFLICT")?m.replace(/^.*CONFLICT:\s*/,""):"저장하지 못했습니다: "+m);reload();})
+   .apply(op,{...p,_asOf:C?C.elapsed:0,_tok:TOK});
+}
+function applyData(data){
+  S.data[S.env]=data; if(data.leaders)Object.assign(LEADER,data.leaders);
+  if(ADM.sel&&String(ADM.sel).startsWith("L")&&ADM.pendingName){const x=(data.roster||[]).find(r=>r.name===ADM.pendingName&&!r.archived)||(data.speakers||[]).find(s=>s.name===ADM.pendingName&&!s.archived);if(x){ADM.sel=x.id;ADM.pendingName=null;}}
+  const a=document.activeElement;
+  if(a&&(a.tagName==="TEXTAREA"||(a.tagName==="INPUT"&&!["checkbox","date"].includes(a.type))))pendingRender=true; else render();
+}
+function reload(){google.script.run.withSuccessHandler(r=>{if(r&&r.data)applyData(r.data);}).withFailureHandler(err=>{if(String(err&&err.message||err).includes("로그인이 필요")){setTok("");showLogin("로그인이 만료되었습니다. 다시 로그인해 주세요.");}}).refresh(TOK);}
+document.addEventListener("focusout",()=>setTimeout(()=>{if(pendingRender){pendingRender=false;render();}},0));
+function bootBox(){let m=$("bootMsg");if(!m){m=document.createElement("div");m.className="box login";m.id="bootMsg";document.querySelector("main").prepend(m);}return m;}
+function showLogin(msg){
+  document.body.classList.add("locked");CTX=null;$("who").style.display="none";$("logoutBtn").style.display="none";
+  const m=bootBox();let email="";try{email=localStorage.getItem("sunjang-email")||"";}catch(e){}
+  m.innerHTML=`<h2>운영진 로그인</h2><p class="sub">${esc(msg||"등록된 이메일로 6자리 인증코드를 받아 로그인합니다. 한 번 로그인하면 14일 동안 유지됩니다.")}</p>
+   <form class="form" id="lgForm" novalidate><label>이메일<input type="email" id="lgEmail" value="${esc(email)}" autocomplete="email" required></label>
+   <div id="lgStep2" style="display:none"><label>인증코드 6자리<input id="lgCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label></div>
+   <button class="btn pri" type="submit" id="lgBtn">인증코드 받기</button><div class="muted" id="lgMsg"></div></form>`;
+  let step=1;
+  $("lgForm").addEventListener("submit",e=>{e.preventDefault();const em=$("lgEmail").value.trim(),b=$("lgBtn");b.disabled=true;
+    if(step===1){google.script.run.withSuccessHandler(r=>{b.disabled=false;step=2;$("lgStep2").style.display="";b.textContent="로그인";$("lgMsg").textContent=r.message;$("lgCode").focus();try{localStorage.setItem("sunjang-email",em);}catch(e){}})
+      .withFailureHandler(err=>{b.disabled=false;$("lgMsg").textContent=err&&err.message||err;}).requestLoginCode(em);}
+    else{google.script.run.withSuccessHandler(r=>{setTok(r.token);start(r);}).withFailureHandler(err=>{b.disabled=false;$("lgMsg").textContent=err&&err.message||err;}).verifyLoginCode(em,$("lgCode").value.trim());}});
+}
+let pollH=null;
+function start(r){
+  const m=$("bootMsg");if(m)m.remove();document.body.classList.remove("locked");
+  CTX={name:r.ctx.name,role:r.ctx.role,table:r.ctx.table,email:r.ctx.email};
+  S.env=r.ctx.env; S.data[S.env]=r.data; if(r.data.leaders)Object.assign(LEADER,r.data.leaders);
+  $("footNote").textContent=`${r.ctx.envLabel} 시트에 저장됩니다. 기준일 변경은 화면 시뮬레이션이며 데이터 날짜에는 영향이 없습니다.`;
+  $("resetBtn").style.display="none";
+  $("who").textContent=`${r.ctx.name} · ${ROLE_KO[r.ctx.role]}`;$("who").style.display="";$("logoutBtn").style.display=r.ctx.via==="google"?"none":"";
+  render(); clearInterval(pollH); pollH=setInterval(()=>{if(CTX&&!syncing&&!pendingRender&&document.visibilityState==="visible")reload();},60000);
+}
+function boot(){
+  document.body.classList.add("locked");
+  bootBox().innerHTML='<h2>불러오는 중</h2><p class="sub">운영 시트에서 권한과 데이터를 확인하고 있습니다.</p>';
+  google.script.run.withSuccessHandler(r=>{if(!r.ctx.active){setTok("");showLogin();return;}start(r);})
+   .withFailureHandler(err=>{bootBox().innerHTML=`<h2>불러오지 못했습니다</h2><p class="sub">${esc(err&&err.message||err)}</p>`;}).bootstrap(TOK);
+}
+$("logoutBtn").addEventListener("click",()=>{if(!confirm("로그아웃합니다."))return;const t=TOK;setTok("");google.script.run.withFailureHandler(()=>{}).logout(t);showLogin("로그아웃했습니다.");});
+if(GAS){$("roleSel").closest("label").style.display="none";document.querySelector(".env").closest("label").style.display="none";boot();} else render();
+</script>
+</body>
+</html>
