@@ -3,6 +3,9 @@
  * v4.1: 이메일 인증코드 로그인 · 명단 관리(교육생·강사·운영진) · 조편성 · 일괄 입력 · 보관/복원 · 버전 충돌 방지
  * v4.1.1 (배포 보완): 관리용 함수 외부 호출 차단 · 편집기에서 인수 없이 실행 가능 · 시트 연결 1회 재사용(속도) ·
  *                     기록 시각 보존 · 1000행 초과 대비 · 일일 요약 1일 1회 제한
+ * v4.2 (원본 엑셀 대비 보강): 예산 수입/지출 구분(화면) · 집결시간 설정 · 회비 금액·교육생별 납부 · 휴강일 반영 날짜 계산 ·
+ *                     대표기도 담당공동체 · 개강 준비 11개+메모 · 담당장로(Elder) 조회 역할
+ *      ※ v4.1.1 시트를 쓰던 경우 upgradeToV42() 한 번 실행 → 새 열·설정·준비 항목이 추가됩니다 (기존 데이터 유지)
  * 대시보드 v4(운영매뉴얼형)의 데이터 모델과 1:1로 맞춘 서버 함수 모음.
  *
  * 최초 1회 실행 순서 (편집기 상단 함수 선택 → ▶ 실행. 모든 함수는 인수 없이 실행됩니다)
@@ -35,8 +38,8 @@ const SCHEMA = {
   v4_Config:     ['key', 'value', 'note'],
   v4_Access:     ['email', 'name', 'role', 'table', 'active', 'team', 'ver', 'updated', 'by'],
   v4_Team:       ['team', 'members'],
-  v4_Week:       ['no', 'date', 'topic', 'speaker', 'sp', 'ppt', 'thanks', 'prayer', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'speakerId'],
-  v4_Trainee:    ['name', 'table', 'status', 'updated', 'id', 'community', 'source', 'note', 'archived', 'ver', 'by'],
+  v4_Week:       ['no', 'date', 'topic', 'speaker', 'sp', 'ppt', 'thanks', 'prayer', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'speakerId', 'community'],
+  v4_Trainee:    ['name', 'table', 'status', 'updated', 'id', 'community', 'source', 'note', 'archived', 'ver', 'by', 'paid'],
   v4_Speaker:    ['id', 'name', 'title', 'org', 'topics', 'history', 'note', 'archived', 'ver', 'updated', 'by'],
   v4_WeeklyCare: ['ts', 'week', 'name', 'table', 'att', 'part', 'qt', 'sig', 'cat', 'act', 'note', 'by'],
   v4_Case:       ['name', 'stage', 'esc', 'closedW', 'ts', 'by'],
@@ -44,7 +47,7 @@ const SCHEMA = {
   v4_Official:   ['name', 'result', 'ts', 'by'],
   v4_Task:       ['key', 'done', 'ts', 'by'],
   v4_Milestone:  ['id', 'status', 'ts', 'by'],
-  v4_Prep:       ['idx', 'item', 'done'],
+  v4_Prep:       ['idx', 'item', 'done', 'memo'],
   v4_Budget:     ['item', 'plan', 'spend', 'status'],
   v4_DDay:       ['week', 'idx', 'done', 'issue', 'ts', 'by'],
   v4_Debrief:    ['week', 'keep', 'problem', 'care', 'next', 'ts', 'by'],
@@ -55,12 +58,13 @@ const SCHEMA = {
 const TOPICS = ['오리엔테이션·개강예배 및 온누리교회 목회철학', '역동적인 순장', '순예배의 도전과 균형', '순예배의 인도와 실제',
   '순예배 인도를 위한 키워드', '선교하는 순', '순원 돌봄의 키워드', '성령충만한 순', '순장의 사명(수료예배)', '아웃팅'];
 const PREPLAN = ['순장학교 프로그램 기획 (일정·강사·기도)', '예산 신청', '순장학교 모집 공지', '운영스텝 모집·단톡방 개설', '교재 제본 (인쇄소 확정)',
-  '아이스쿨 순장학교 등록 (계정정보는 별도 보관)', '비품 확인 및 세탁', '강사 선정 및 일정 확인', '장로님 기도 일정 확인'];
+  '아이스쿨 순장학교 등록 (계정정보는 별도 보관)', '비품 확인 및 세탁', '강사 선정 및 일정 확인', '장로님 기도 일정 확인',
+  '회비 결정 (금액·입금 안내)', '과제 확인 (수료 기준·체크표)'];
 const BUDGET = ['교회예산', '회비', '교재비', '강사사례비', '수료선물비', '일회용품 및 기타', '아웃팅비용 지원', '예비비', '식사비', '간식비'];
 const TEAMS = ['교육팀', '학사팀', '섬김팀', 'AV', '찬양'];
 const TABLES = ['T1', 'T2', 'T3', 'T4', 'T5'];
 const E = {
-  role: ['TeamLeader', 'Secretary', 'TableLeader', 'Pastor'],
+  role: ['TeamLeader', 'Secretary', 'TableLeader', 'Pastor', 'Elder'],
   att: ['Present', 'Late', 'Absent', 'Excused'], sig: ['Green', 'Yellow', 'Red'], qt: ['정상', '부분', '미완료', '-'],
   cat: ['', '출석', '관계', '가정', '신앙', '건강', '기타'], sp: ['미섭외', '섭외중', '확정', '변경'], ppt: ['미수령', '초안', 'Final'],
   thanks: ['미완료', '진행중', '완료'], ms: ['Not Started', 'In Progress', 'Done', 'Hold'], bst: ['미집행', '진행중', '집행완료'],
@@ -260,20 +264,26 @@ function readConfig_() {
   return {
     name: m.name || '2026 순장학교', open: m.open || OPEN_DATE_DEFAULT, venue: m.venue || '비전홀', time: m.time || '15:30~17:30',
     crit: { sil: num_(m.crit_sil || 2), gong: num_(m.crit_gong || 2), out: num_(m.crit_out || 1), dok: num_(m.crit_dok || 1), abs: num_(m.crit_abs || 2) },
-    excAbs: bool_(m.excAbs)
+    excAbs: bool_(m.excAbs), gather: m.gather || '14:30', fee: num_(m.fee === undefined || m.fee === '' ? 50000 : m.fee), holidays: m.holidays || ''
   };
 }
 function weeks_() {
   return read_('v4_Week').map(w => ({
     no: num_(w.no), date: String(w.date), topic: w.topic, speaker: w.speaker, sp: w.sp || '미섭외', ppt: w.ppt || '미수령',
-    thanks: w.thanks || '미완료', prayer: w.prayer, prep: [1, 2, 3, 4, 5, 6, 7].map(j => num_(w['p' + j])), speakerId: w.speakerId || '', touched: true
+    thanks: w.thanks || '미완료', prayer: w.prayer, community: w.community || '', prep: [1, 2, 3, 4, 5, 6, 7].map(j => num_(w['p' + j])), speakerId: w.speakerId || '', touched: true
   })).sort((a, b) => a.no - b.no);
+}
+/** 개강일부터 매주 일요일, 휴강일(쉼표 구분)은 건너뛰고 10주 날짜 */
+function weekDates_(open, holidays) {
+  const hs = String(holidays || '').split(/[\s,]+/).filter(Boolean), out = []; let d = open, k = 0;
+  while (out.length < 10 && k++ < 60) { if (hs.indexOf(d) < 0) out.push(d); d = addDays_(d, 7); }
+  return out;
 }
 function elapsed_(weeks) { const t = today_(); return (weeks || weeks_()).filter(w => w.date <= t).length; }
 
 function getState_(ctx) {
   const scope = t => ctx.table === 'ALL' || t === ctx.table;
-  const role = ctx.role, mask = role === 'Secretary';
+  const role = ctx.role, mask = role === 'Secretary' || role === 'Elder';
   const trainees = read_('v4_Trainee'), tableOf = {};
   trainees.filter(t => !bool_(t.archived)).forEach(t => tableOf[t.name] = t.table);
   const access = read_('v4_Access');
@@ -292,10 +302,11 @@ function getState_(ctx) {
     tasks: map('v4_Task', 'key', r => bool_(r.done)),
     ms: map('v4_Milestone', 'id', r => r.status),
     prep: map('v4_Prep', 'idx', r => bool_(r.done)),
+    prepMemo: map('v4_Prep', 'idx', r => r.memo || ''),
     budget: role === 'TableLeader' ? [] : read_('v4_Budget').map(b => ({ b: b.item, plan: num_(b.plan), spend: num_(b.spend), st: b.status || '미집행' })),
     dd: dd,
     roster: trainees.filter(t => scope(t.table) && (!bool_(t.archived) || role === 'TeamLeader' || role === 'Secretary')).map(t => ({
-      id: t.id, name: t.name, table: t.table, status: t.status, community: t.community, source: t.source, note: t.note,
+      id: t.id, name: t.name, table: t.table, status: t.status, community: t.community, source: t.source, note: t.note, paid: bool_(t.paid),
       archived: bool_(t.archived), ver: num_(t.ver) || 1, updated: t.updated, by: t.by })),
     speakers: read_('v4_Speaker').map(s => ({ id: s.id, name: s.name, title: s.title, org: s.org, topics: s.topics, history: s.history, note: s.note,
       archived: bool_(s.archived), ver: num_(s.ver) || 1, updated: s.updated })),
@@ -361,9 +372,9 @@ const HANDLERS = {
     return p.k + ' → ' + (p.v ? '완료' : '해제');
   },
   prep(p) { need_(p.j >= 0 && p.j < 7 && [0, 1, 2, 3].indexOf(num_(p.v)) >= 0, '준비물 값 오류'); setWeekField_(num_(p.i) + 1, 'p' + (num_(p.j) + 1), num_(p.v)); return (num_(p.i) + 1) + '주차 준비물' + (num_(p.j) + 1) + ' → ' + p.v; },
-  recalc() { const o = readConfig_().open, rows = read_('v4_Week'); rows.forEach(r => r.date = addDays_(o, 7 * (num_(r.no) - 1))); write_('v4_Week', rows); return '개강일 ' + o + ' 기준 재계산'; },
+  recalc() { const c = readConfig_(), ds = weekDates_(c.open, c.holidays), rows = read_('v4_Week'); rows.forEach(r => r.date = ds[num_(r.no) - 1]); write_('v4_Week', rows); return '개강일 ' + c.open + ' 기준 재계산' + (c.holidays ? ' (휴강 ' + c.holidays + ' 제외)' : ''); },
   wk(p) {
-    const f = oneOf_(p.f, ['date', 'speaker', 'sp', 'ppt', 'thanks', 'prayer'], '항목'); let v = clip_(p.v, 40);
+    const f = oneOf_(p.f, ['date', 'speaker', 'sp', 'ppt', 'thanks', 'prayer', 'community'], '항목'); let v = clip_(p.v, f === 'community' ? 20 : 40);
     if (f === 'date') need_(/^\d{4}-\d{2}-\d{2}$/.test(v), '날짜 형식은 YYYY-MM-DD입니다.');
     if (f === 'sp') oneOf_(v, E.sp, '섭외상태'); if (f === 'ppt') oneOf_(v, E.ppt, 'PPT'); if (f === 'thanks') oneOf_(v, E.thanks, '감사');
     setWeekField_(num_(p.i) + 1, f, v); return (num_(p.i) + 1) + '주차 ' + f + ' → ' + v;
@@ -421,7 +432,7 @@ const HANDLERS = {
     }
     need_(name, '이름을 입력하세요.'); need_(table, 'Table은 T1~T5 중 하나입니다.'); oneOf_(r.status, E.status, '등록상태');
     need_(!rows.some(x => x.name === name && !bool_(x.archived) && x.id !== r.id), '같은 이름의 교육생이 있습니다. 구분 표기(예: 김하늘B)를 붙여 주세요.');
-    const fields = { name: name, table: table, status: r.status, community: clip_(r.community, 30), source: clip_(r.source, 20), note: clip_(r.note, 80), updated: now_(), by: ctx.email };
+    const fields = { name: name, table: table, status: r.status, community: clip_(r.community, 30), source: clip_(r.source, 20), note: clip_(r.note, 80), paid: r.paid === true || r.paid === 'on', updated: now_(), by: ctx.email };
     if (!r.id) { rows.push(Object.assign({ id: newId_('T'), archived: false, ver: 1 }, fields)); write_('v4_Trainee', rows); return '교육생 등록 ' + name + ' ' + table; }
     const row = rows.find(x => x.id === r.id); need_(row, '교육생을 찾을 수 없습니다.'); verCheck_(row, p.ver);
     const oldName = row.name, oldTable = row.table;
@@ -450,7 +461,7 @@ const HANDLERS = {
         if (oldTable !== table) relinkTrainee_(name, name, table); upd++;
       } else {
         rows.push({ id: newId_('T'), name: name, table: table, status: E.status.indexOf(x.status) >= 0 ? x.status : 'Registered', community: clip_(x.community, 30),
-          source: clip_(x.source, 20), note: clip_(x.note, 80), archived: false, ver: 1, updated: now_(), by: ctx.email }); add++;
+          source: clip_(x.source, 20), note: clip_(x.note, 80), paid: false, archived: false, ver: 1, updated: now_(), by: ctx.email }); add++;
       }
     });
     write_('v4_Trainee', rows); return '일괄 입력 신규 ' + add + ' · 수정 ' + upd + ' · 제외 ' + skip;
@@ -505,7 +516,9 @@ const HANDLERS = {
     write_('v4_Access', rows); return (orig ? '운영진 수정 ' : '운영진 등록 ') + fields.name + ' (' + r.role + (table !== 'ALL' ? ' ' + table : '') + (active ? '' : ', 사용중지') + ')';
   },
   ms(p, ctx) { need_(MS.some(m => m.id === p.id), '마일스톤 오류'); oneOf_(p.st, E.ms, '상태'); upsert_('v4_Milestone', r => r.id === p.id, { id: p.id, status: p.st, ts: now_(), by: ctx.email }); return p.id + ' → ' + p.st; },
-  prepPlan(p) { const i = num_(p.i); need_(i >= 0 && i < PREPLAN.length, '항목 오류'); upsert_('v4_Prep', r => num_(r.idx) === i, { idx: i, item: PREPLAN[i], done: !!p.v }); return PREPLAN[i] + ' → ' + (p.v ? '완료' : '해제'); },
+  prepPlan(p) { const i = num_(p.i); need_(i >= 0 && i < PREPLAN.length, '항목 오류');
+    if (p.memo !== undefined) { upsert_('v4_Prep', r => num_(r.idx) === i, { idx: i, item: PREPLAN[i], memo: clip_(p.memo, 60) }); return PREPLAN[i] + ' 메모'; }
+    upsert_('v4_Prep', r => num_(r.idx) === i, { idx: i, item: PREPLAN[i], done: !!p.v }); return PREPLAN[i] + ' → ' + (p.v ? '완료' : '해제'); },
   bud(p) {
     const rows = read_('v4_Budget'), b = rows[num_(p.i)]; need_(b, '예산 항목 오류'); oneOf_(p.f, ['plan', 'spend', 'st'], '예산 필드');
     if (p.f === 'st') b.status = oneOf_(p.v, E.bst, '집행상태'); else b[p.f] = Math.max(0, num_(p.v));
@@ -514,10 +527,13 @@ const HANDLERS = {
   official(p, ctx) { const t = traineeOf_(p.name); oneOf_(p.v, E.official, '판정'); upsert_('v4_Official', x => x.name === t.name, { name: t.name, result: p.v, ts: now_(), by: ctx.email }); return t.name + ' 공식 판정 ' + p.v; },
   team(p) { oneOf_(p.k, TEAMS, '팀'); upsert_('v4_Team', r => r.team === p.k, { team: p.k, members: clip_(p.v, 60) }); return p.k + ' 배정'; },
   cfg(p) {
-    const k = oneOf_(p.k, ['name', 'open', 'venue', 'time', 'excAbs'], '설정'); let v = clip_(p.v, 40);
+    const k = oneOf_(p.k, ['name', 'open', 'venue', 'time', 'excAbs', 'gather', 'fee', 'holidays'], '설정'); let v = clip_(p.v, k === 'holidays' ? 200 : 40);
     if (k === 'open') need_(/^\d{4}-\d{2}-\d{2}$/.test(v), '날짜 형식은 YYYY-MM-DD입니다.');
     if (k === 'excAbs') v = String(v === 'true' || v === true);
-    setConfig_(k, v); if (k === 'open') HANDLERS.recalc();
+    if (k === 'gather') need_(/^\d{2}:\d{2}$/.test(v), '집결시간 형식은 14:30입니다.');
+    if (k === 'fee') v = String(Math.max(0, num_(v)));
+    if (k === 'holidays') v = String(v).split(/[\s,]+/).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 10).join(', ');
+    setConfig_(k, v); if (k === 'open' || k === 'holidays') HANDLERS.recalc();
     return '설정 ' + k + ' → ' + v;
   },
   crit(p) { oneOf_(p.k, ['sil', 'gong', 'out', 'dok', 'abs'], '수료 기준'); const v = Math.max(0, Math.min(10, num_(p.v))); setConfig_('crit_' + p.k, v); return '수료 기준 ' + p.k + ' → ' + v; }
@@ -544,6 +560,17 @@ function upgradeToV41_() {
   write_('v4_Speaker', sp); write_('v4_Week', wk);
   return 'upgradeToV41 완료: 교육생 id ' + nT + '건 부여, 강사 ' + nS + '명 생성';
 }
+const CFG_V42 = [{ key: 'gather', value: '14:30', note: '스텝 집결시간 (원본 큐시트: 교육준비 14:30)' },
+  { key: 'fee', value: 50000, note: '회비 (원) — 5만원 가정' }, { key: 'holidays', value: '', note: '휴강일 (일요일, 쉼표 구분)' }];
+/** v4.1.1 → v4.2: 새 열 헤더·설정 3개·개강 준비 2개 추가. 여러 번 실행해도 안전 (기존 값 유지) */
+function upgradeToV42() {
+  adminOnly_(); upgradeToV41_();
+  const cfg = read_('v4_Config'); let nC = 0;
+  CFG_V42.forEach(c => { if (!cfg.some(r => r.key === c.key)) { cfg.push(c); nC++; } }); write_('v4_Config', cfg);
+  const pr = read_('v4_Prep'); let nP = 0;
+  PREPLAN.forEach((t, i) => { if (!pr.some(r => num_(r.idx) === i)) { pr.push({ idx: i, item: t, done: false, memo: '' }); nP++; } }); write_('v4_Prep', pr);
+  return 'upgradeToV42 완료: 설정 ' + nC + '개, 개강 준비 ' + nP + '개 추가';
+}
 function setupV4(openDate) {
   adminOnly_();
   const open = /^\d{4}-\d{2}-\d{2}$/.test(String(openDate || '')) ? openDate : OPEN_DATE_DEFAULT;
@@ -553,9 +580,10 @@ function setupV4(openDate) {
     { key: 'venue', value: '비전홀', note: '교육장' }, { key: 'time', value: '15:30~17:30', note: '교육시간' },
     { key: 'crit_sil', value: 2, note: '순장실습 필요횟수 (초안)' }, { key: 'crit_gong', value: 2, note: '순장공부 필요횟수 (초안)' },
     { key: 'crit_out', value: 1, note: '아웃리치 필요 (초안)' }, { key: 'crit_dok', value: 1, note: '독후감 필요 (초안)' },
-    { key: 'crit_abs', value: 2, note: '최대 결석 허용 (공식 기준 확인 필요)' }, { key: 'excAbs', value: 'false', note: '사유결석 결석 산입 여부' }]);
+    { key: 'crit_abs', value: 2, note: '최대 결석 허용 (공식 기준 확인 필요)' }, { key: 'excAbs', value: 'false', note: '사유결석 결석 산입 여부' }]
+    .concat(CFG_V42));
   if (!read_('v4_Week').length) write_('v4_Week', TOPICS.map((t, i) => ({ no: i + 1, date: addDays_(open, 7 * i), topic: t, speaker: '', sp: '미섭외', ppt: '미수령',
-    thanks: '미완료', prayer: i === 0 ? '담당장로' : '', p1: 0, p2: 0, p3: 0, p4: 0, p5: 0, p6: 0, p7: 0 })));
+    thanks: '미완료', prayer: i === 0 ? '담당장로' : '', community: '', p1: 0, p2: 0, p3: 0, p4: 0, p5: 0, p6: 0, p7: 0 })));
   if (!read_('v4_Budget').length) write_('v4_Budget', BUDGET.map(b => ({ item: b, plan: 0, spend: 0, status: '미집행' })));
   if (!read_('v4_Prep').length) write_('v4_Prep', PREPLAN.map((t, i) => ({ idx: i, item: t, done: false })));
   if (!read_('v4_Team').length) write_('v4_Team', TEAMS.map(t => ({ team: t, members: '' })));
@@ -645,7 +673,7 @@ function seedQASample() {
     if (name === '김하늘') comp.dok = []; if (name === '문태호') comp.gong = [5];
     Object.keys(comp).forEach(k => comp[k].forEach(w => asg.push({ ts: now_(), name: name, kind: k, week: w, delta: 1, by: '샘플' })));
   });
-  write_('v4_Trainee', S.map(([n, t]) => ({ name: n, table: t, status: 'Active', updated: now_(), archived: false, ver: 1, by: '샘플' })));
+  write_('v4_Trainee', S.map(([n, t], i) => ({ name: n, table: t, status: 'Active', updated: now_(), archived: false, ver: 1, by: '샘플', paid: i % 5 !== 0 })));
   write_('v4_Speaker', []);
   write_('v4_WeeklyCare', care); write_('v4_Assignment', asg); write_('v4_Case', []); write_('v4_Official', []);
   const t = today_(), weeks = read_('v4_Week');
@@ -674,10 +702,10 @@ function getSystemHealth() {
   if (!missing.length) add(read_('v4_Trainee').every(t => t.id), '교육생 id 부여', 'upgradeToV41() 실행');
   if (!missing.length) {
     const acc = read_('v4_Access');
-    add(acc.every(a => E.role.indexOf(a.role) >= 0), 'v4_Access 역할 값', 'role은 TeamLeader/Secretary/TableLeader/Pastor 중 하나');
+    add(acc.every(a => E.role.indexOf(a.role) >= 0), 'v4_Access 역할 값', 'role은 TeamLeader/Secretary/TableLeader/Pastor/Elder 중 하나');
     add(!acc.some(a => /example\.com$/i.test(a.email)), 'v4_Access 실제 계정', 'example.com 샘플 이메일이 남아 있습니다');
     add(acc.some(a => a.role === 'TeamLeader'), 'TeamLeader 계정', 'TeamLeader 최소 1명 필요');
-    add(TABLES.every(t => acc.some(a => a.role === 'TableLeader' && a.table === t)), 'TableLeader T1~T5 Scope', 'Table별 리더 1명씩 지정');
+    add(true, 'TableLeader (선택) ' + acc.filter(a => a.role === 'TableLeader' && isActive_(a)).length + '명', '');
     const cfg = readConfig_(), wk = weeks_();
     add(wk.length === 10 && wk[0].date === cfg.open, '1주차 = 개강일', '주차 Board 1주차 날짜와 설정 개강일 불일치');
     add(wk.every(w => new Date(w.date + 'T12:00:00+09:00').getDay() === 0), '교육일 모두 일요일', '일요일이 아닌 교육일이 있습니다');

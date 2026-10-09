@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>2026 순장학교 운영매뉴얼 v4.1.1</title>
+<title>2026 순장학교 운영매뉴얼 v4.2</title>
 <!-- [앱화] PWA 설정: 홈 화면 설치·아이콘·상태표시줄 색 -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#173858">
@@ -83,7 +83,7 @@ section.view{display:none} section.view.on{display:block}
 .bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--soft);margin-top:7px}
 .bar span{display:block;height:100%}
 .g2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px}
-.g2e{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g2e{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:16px}
 .box h2{font-size:15px;margin:0 0 3px;font-weight:700}
 .box h3{font-size:13px;margin:14px 0 6px;color:var(--muted);font-weight:600}
@@ -272,14 +272,14 @@ textarea.bulk{width:100%;min-height:150px;border:1px solid var(--line);border-ra
 body.locked nav.tabs,body.locked .cycle,body.locked section.view{display:none!important}
 body.locked .ctl label{display:none!important}
 @media (max-width:960px){.admgrid{grid-template-columns:1fr}.admgrid>.box:last-child{position:static}.grp{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:960px){.g2,.g2e{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.map{grid-template-columns:repeat(3,minmax(0,1fr))}.kan{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.set{grid-template-columns:1fr 1fr}.grow{grid-template-columns:120px 1fr}.gaxis{margin-left:120px}}
+@media (max-width:960px){.g2,.g2e{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.map{grid-template-columns:repeat(3,minmax(0,1fr))}.kan{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.set{grid-template-columns:1fr 1fr}.grow{grid-template-columns:120px 1fr}.gaxis{margin-left:120px}}
 @media (max-width:560px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}.form,.set,.debrief{grid-template-columns:1fr}.form .w2{grid-column:auto}.head p{font-size:15px}.weeks{margin-left:0}.ros{grid-template-columns:92px 36px 1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <div class="brand"><small>온누리교회 순장사관학교 · ERP LITE v4.1.1</small><h1>2026 순장학교 운영매뉴얼 대시보드</h1></div>
+  <div class="brand"><small>온누리교회 순장사관학교 · ERP LITE v4.2</small><h1>2026 순장학교 운영매뉴얼 대시보드</h1></div>
   <div class="ctl">
     <label>기준일 (날짜가 할 일을 결정)
       <div class="row"><input type="date" id="tDate" aria-label="기준일"><button class="tbtn" type="button" id="tToday">오늘</button>
@@ -330,7 +330,7 @@ body.locked .ctl label{display:none!important}
 <section class="view" id="v-board">
   <div class="head" id="boardHead"></div>
   <div class="box"><div class="boxhd"><div><h2>10주 운영 Board</h2><p class="sub">강사는 「명단 관리 › 강사」 목록에서 고르고, 주제·대표기도는 이 표에서 입력합니다. 준비물 칸을 누르면 미완료 → 진행중 → 완료 → 해당없음 순으로 바뀝니다.</p></div><button class="btn" data-act="recalcDates" id="recalcBtn">개강일 기준 날짜 재계산</button></div>
-  <div class="tscroll"><table class="dt" id="board"></table></div></div>
+  <div class="tscroll"><table class="dt" id="board"></table><datalist id="commList"><option>화평</option><option>믿음</option><option>소망</option><option>사랑</option><option>희락</option></datalist></div></div>
 </section>
 
 <section class="view" id="v-dday">
@@ -412,14 +412,15 @@ const TABLES=["T1","T2","T3","T4","T5"];
 const ROLES=[
  {name:"담당교역자(샘플)",role:"Pastor",table:"ALL"},{name:"팀장(샘플)",role:"TeamLeader",table:"ALL"},{name:"총무(샘플)",role:"Secretary",table:"ALL"},
  {name:"김리더(샘플)",role:"TableLeader",table:"T1"},{name:"이리더(샘플)",role:"TableLeader",table:"T2"},{name:"박리더(샘플)",role:"TableLeader",table:"T3"},
- {name:"최리더(샘플)",role:"TableLeader",table:"T4"},{name:"정리더(샘플)",role:"TableLeader",table:"T5"}];
-const ROLE_KO={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자"};
-const OWNER_KEY={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자"};
+ {name:"최리더(샘플)",role:"TableLeader",table:"T4"},{name:"정리더(샘플)",role:"TableLeader",table:"T5"},{name:"담당장로(샘플)",role:"Elder",table:"ALL"}];
+const ROLE_KO={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자",Elder:"담당장로"};
+const OWNER_KEY={TeamLeader:"팀장",Secretary:"총무",TableLeader:"테이블리더",Pastor:"담당교역자",Elder:"담당장로"};
 const PERM={
  TeamLeader:{tabs:["today","home","board","dday","care","grad","cal","admin","manual"],task:true,board:true,dday:true,careEdit:true,input:true,assign:true,official:true,cal:true,cfg:true,tEdit:true,spEdit:true,stEdit:true,bulk:true},
  Secretary:{tabs:["today","home","board","dday","care","grad","cal","admin","manual"],task:true,board:true,dday:true,careMask:true,assign:true,cal:true,tEdit:true,spEdit:true,bulk:true},
  TableLeader:{tabs:["today","home","care","grad","admin","manual"],taskOwn:true,input:true,careTL:true,tNote:true},
- Pastor:{tabs:["today","home","care","grad","cal","admin","manual"],careEdit:true,official:true,spEdit:true}};
+ Pastor:{tabs:["today","home","care","grad","cal","admin","manual"],careEdit:true,official:true,spEdit:true},
+ Elder:{tabs:["today","home","care","grad","cal","manual"],careMask:true}};
 const TAB_LABEL={today:"오늘 할 일",home:"운영 현황",board:"주차 Board",dday:"D-Day 진행",care:"Care",grad:"수료 관리",cal:"기수 캘린더",admin:"명단 관리",manual:"매뉴얼"};
 
 /* 주간 사이클 (Reminder_Center + Reminder_문구 + 현장체크리스트 D+1/D+2) */
@@ -462,8 +463,19 @@ const MSTAT=["Not Started","In Progress","Done","Hold"];
 /* D-Day One Page (T=15:30) */
 const DDAY=[["T-120","Venue","냉난방·좌석·단상·칠판·안내물","총무/섬김"],["T-100","Registration","출석부·명찰·교재·Table 표시","학사"],["T-90","AV","PPT·마이크·영상·찬양 Audio","AV"],["T-60","다과","생수·커피·간식·냅킨·쓰레기봉투","섬김"],["T-45","Staff","Prayer Huddle·교육생 수·특이사항·Emergency","팀장"],["T-30","Welcome","교육생 맞이·명찰·좌석 안내","전체"],["T-15","강사","진행순서·시간·마이크·요청사항","교육팀"],["T-5","Ready","전 팀 준비완료 Signal","총무"],["T","수업","출결·시간·Care 관찰","전체"],["Break","Care","소외·불편 교육생 확인·다과 보충","Table/섬김"],["종료","Closing","다음 주 일정·과제·준비물 안내","팀장/총무"],["T+20","Debrief","Keep / Problem / Care / Next","팀장"],["D+1","Data","출석·과제·Care·Budget·Issue Update","총무/학사"],["D+2","Follow-up","Yellow/Red 대상 연락·Escalation","Table/팀장"]];
 const DDCLOCK={"T-120":"13:30","T-100":"13:50","T-90":"14:00","T-60":"14:30","T-45":"14:45","T-30":"15:00","T-15":"15:15","T-5":"15:25","T":"15:30","Break":"17:00","종료":"17:20","T+20":"17:50","D+1":"월","D+2":"화"};
+// [v4.2] 집결시간(설정)·교육 시작시간 기준으로 D-Day 시각 계산. 시작 전 항목은 집결시간보다 앞설 수 없음
+const DDOFF={"T-120":-120,"T-100":-100,"T-90":-90,"T-60":-60,"T-45":-45,"T-30":-30,"T-15":-15,"T-5":-5,"T":0,"Break":90,"종료":110,"T+20":140};
+const hm=v=>{const m=String(v||"").match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+(+m[2]):null;};
+const hhmm=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");
+const gatherT=()=>(D().cfg&&D().cfg.gather)||"14:30";
+const startM=()=>{const v=hm(D().cfg&&D().cfg.time);return v===null?930:v;};
+const gatherM=()=>{const v=hm(gatherT());return v===null?870:v;};
+const ddClamped=k=>k in DDOFF&&DDOFF[k]<0&&startM()+DDOFF[k]<gatherM();
+function ddClock(k){if(!(k in DDOFF))return DDCLOCK[k];const t=startM()+DDOFF[k];return hhmm(ddClamped(k)?gatherM():t);}
 
-const PREPLAN=["순장학교 프로그램 기획 (일정·강사·기도)","예산 신청","순장학교 모집 공지","운영스텝 모집·단톡방 개설","교재 제본 (인쇄소 확정)","아이스쿨 순장학교 등록 (계정정보는 별도 보관)","비품 확인 및 세탁","강사 선정 및 일정 확인","장로님 기도 일정 확인"];
+
+const PREPLAN=["순장학교 프로그램 기획 (일정·강사·기도)","예산 신청","순장학교 모집 공지","운영스텝 모집·단톡방 개설","교재 제본 (인쇄소 확정)","아이스쿨 순장학교 등록 (계정정보는 별도 보관)","비품 확인 및 세탁","강사 선정 및 일정 확인","장로님 기도 일정 확인","회비 결정 (금액·입금 안내)","과제 확인 (수료 기준·체크표)"];
+const INCOME=["교회예산","회비"];   // [v4.2] 원본 예산 시트의 수입 항목
 const BUDGET=["교회예산","회비","교재비","강사사례비","수료선물비","일회용품 및 기타","아웃팅비용 지원","예비비","식사비","간식비"];
 const DUTIES=[["교육준비 및 기도회","2명","테이블 배치·커버, 의자, 단상, 칠판 / 조별 표시 폴더 5개, 출석부, 명찰"],["교육준비 및 기도회","2명","PPT, 마이크 2대 확인"],["교육준비 및 기도회","3명","간식 준비"],["Welcome","모든 스텝","안내"],["찬양","2명 + 1명","찬양 인도 / PPT 화면 조정"],["기도 및 축복메시지","주별 장로님","대표기도"],["강의","강사","강의"],["휴식","모든 스텝","간식 나눔"],["조별 강의주제 나눔","조장","조장 선출, 강의주제 나눔"],["광고","팀장","다음 주 일정·과제"],["마침기도 및 축도","담당교역자",""]];
 const CARE_RULE=[["Green","정상 참여","주간 입력 유지","테이블리더"],["Yellow","반복 결석·참여 저하","D+2 개별 연락","테이블리더"],["Red","안전·심각 이슈","당일 교역자 연결","팀장 → 담당교역자"],["Needs Action","수료요건 미충족","보완계획 수립","학사팀·팀장"],["Likely","참고기준 충족","최종 판정 준비","팀장"]];
@@ -540,19 +552,20 @@ const SAMP=genSample();
 const GAS=typeof google!=="undefined"&&!!(google.script&&google.script.run); // Apps Script 웹앱에서 실행 중인가
 let CTX=null, pendingRender=false, syncing=0;
 const SIMQA=()=>!GAS&&S.env==="QA";
-const KEY="sunjang-ops-v41";
-function mkWeeks(open){const o=d2n(open);return TOPICS.map((t,i)=>({no:i+1,date:n2s(o+7*i),topic:t,speaker:"",speakerId:"",sp:"미섭외",ppt:"미수령",thanks:"미완료",prayer:i===0?"담당장로":"",prep:PREP.map(()=>0)}));}
+const KEY="sunjang-ops-v42";
+function weekDates(open,hol){const hs=new Set(String(hol||"").split(/[\s,]+/).filter(Boolean));let n=d2n(open),k=0;const out=[];while(out.length<10&&k++<60){if(!hs.has(n2s(n)))out.push(n2s(n));n+=7;}return out;}
+function mkWeeks(open){const o=d2n(open);return TOPICS.map((t,i)=>({no:i+1,date:n2s(o+7*i),topic:t,speaker:"",speakerId:"",sp:"미섭외",ppt:"미수령",thanks:"미완료",prayer:i===0?"담당장로":"",community:"",prep:PREP.map(()=>0)}));}
 function seedEnv(env){
   const qa=env==="QA";
   const weeks=mkWeeks("2026-10-18");
   const speakers=qa?[1,2,3,4].map(i=>({id:"S"+i,name:`샘플강사${i}`,title:"목사",org:"",topics:TOPICS[i-1],history:"",note:"",archived:false,ver:1})):[];
   if(qa){weeks.forEach((w,i)=>{if(i<4){w.sp="확정";w.speaker=`샘플강사${i+1}`;w.speakerId="S"+(i+1);}else if(i<7)w.sp="섭외중";});}
-  const staff=ROLES.map((r,i)=>({email:["pastor","leader","secretary","t1","t2","t3","t4","t5"][i]+"@example.com",name:r.name.replace("(샘플)",""),role:r.role,table:r.table,team:"",active:true,ver:1})).map(s=>({...s,key:s.email}));
+  const staff=ROLES.map((r,i)=>({email:["pastor","leader","secretary","t1","t2","t3","t4","t5","elder"][i]+"@example.com",name:r.name.replace("(샘플)",""),role:r.role,table:r.table,team:"",active:true,ver:1})).map(s=>({...s,key:s.email}));
   return {
-    cfg:{name:"2026 순장학교",open:"2026-10-18",venue:"비전홀",time:"15:30~17:30",crit:{sil:2,gong:2,out:1,dok:1,abs:2},excAbs:false},
-    weeks,tasks:{},ms:{},prep:qa?{0:true,1:true,2:true,3:true}:{},
+    cfg:{name:"2026 순장학교",open:"2026-10-18",venue:"비전홀",time:"15:30~17:30",gather:"14:30",fee:50000,holidays:"",crit:{sil:2,gong:2,out:1,dok:1,abs:2},excAbs:false},
+    weeks,tasks:{},ms:{},prep:qa?{0:true,1:true,2:true,3:true}:{},prepMemo:{},
     budget:BUDGET.map(b=>({b,plan:0,spend:0,st:"미집행"})),dd:{},
-    roster:qa?SAMPLE.map(([n,t],i)=>({id:"Q"+i,name:n,orig:n,table:t,status:"Active",community:"",source:"",note:"",archived:false,ver:1})):[],
+    roster:qa?SAMPLE.map(([n,t],i)=>({id:"Q"+i,name:n,orig:n,table:t,status:"Active",community:"",source:"",note:"",paid:i%5!==0,archived:false,ver:1})):[],
     speakers,staff,
     logs:[],cases:{},adj:{},official:{},teams:{"교육팀":"","학사팀":"","섬김팀":"","AV":"","찬양":""},audit:[]};
 }
@@ -681,7 +694,7 @@ const canTask=t=>P().task||(P().taskOwn&&t.o.includes("테이블리더"));
 /* ================= TEMPLATE FILL ================= */
 function fillTpl(key,w){
   const d=D(),f=w||C.focal||C.weeks[0],nx=C.weeks[f.no]||null;
-  const rep={"기수":d.cfg.name,"주차":f.no,"날짜":fmtL(f.n),"주제":f.topic,"강사":f.speaker||"(강사 확정 전)","장소":d.cfg.venue,"시간":d.cfg.time,"PPT마감":fmt(f.n-3),"집결":"13:30","다음날짜":nx?fmt(nx.n):"(과정 종료)"};
+  const rep={"기수":d.cfg.name,"주차":f.no,"날짜":fmtL(f.n),"주제":f.topic,"강사":f.speaker||"(강사 확정 전)","장소":d.cfg.venue,"시간":d.cfg.time,"PPT마감":fmt(f.n-3),"집결":gatherT(),"다음날짜":nx?fmt(nx.n):"(과정 종료)"};
   return TPL[key].x.replace(/\{(.+?)\}/g,(m,k)=>rep[k]!==undefined?rep[k]:m);
 }
 function openTpl(key,wno){const w=wno?C.weeks[wno-1]:null;$("mTitle").textContent=TPL[key].n;$("mSub").textContent=(w||C.focal)?`${(w||C.focal).no}주차 기준으로 채웠습니다. ○○ 부분은 직접 수정합니다.`:"";$("mText").value=fillTpl(key,w);$("ovl").classList.add("on");$("mText").focus();}
@@ -737,7 +750,8 @@ function rHome(){
    <div class="kpi"><div class="l">열린 Care</div><div class="v" style="color:${red?"var(--red)":"inherit"}">${red+yel}<small>명</small></div><div class="s">Red ${red} · Yellow ${yel} (최근 신호 기준)</div></div>
    <div class="kpi"><div class="l">수료 순항</div><div class="v">${pct(ok,n)}<small>%</small></div><div class="bar">${b(pct(fcN("Likely"),n),"var(--navy)")}${b(pct(fcN("On Track"),n),"var(--muted)")}${b(pct(fcN("At Risk"),n),"var(--amber)")}${b(pct(fcN("Needs Action")+fcN("교역자 Review"),n),"var(--red)")}</div><div class="s">At Risk ${fcN("At Risk")} · Needs ${fcN("Needs Action")} · Review ${fcN("교역자 Review")}</div></div>
    <div class="kpi"><div class="l">강사 확정</div><div class="v">${sp}<small>/10</small></div><div class="bar">${b(sp*10,"var(--blue)")}</div><div class="s">PPT Final ${C.weeks.filter(w=>w.ppt==="Final").length}/10</div></div>
-   <div class="kpi"><div class="l">${f?f.no+"주차 준비물":"준비물"}</div><div class="v">${f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0}<small>%</small></div><div class="bar">${b(f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0,"var(--green)")}</div><div class="s">${f?fmt(f.n)+" 기준 7종":"과정 종료"}</div></div>`;
+   <div class="kpi"><div class="l">${f?f.no+"주차 준비물":"준비물"}</div><div class="v">${f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0}<small>%</small></div><div class="bar">${b(f?pct(f.prep.filter(x=>x===2||x===3).length,PREP.length):0,"var(--green)")}</div><div class="s">${f?fmt(f.n)+" 기준 7종":"과정 종료"}</div></div>${me().role!=="TableLeader"?(()=>{const pd=ps.filter(p=>p.paid).length;return `<div class="kpi"><div class="l">회비 납부</div><div class="v">${pd}<small>/${n}명</small></div><div class="bar">${b(pct(pd,n),"var(--green)")}</div><div class="s">${(+D().cfg.fee||0).toLocaleString()}원 · 미납 ${n-pd}명</div></div>`;})():""}`;
+  $("kpis").style.gridTemplateColumns=me().role!=="TableLeader"&&innerWidth>720?"repeat(6,minmax(0,1fr))":"";
   // head
   let m,why;
   if(!n){m="등록 교육생이 없습니다 → 매뉴얼·관리 탭 명단 관리에서 Registered 교육생을 입력해야 Care·수료 집계가 시작됩니다";why="v3의 빈 명단 50행 'Needs Action' 오집계는 v4에서 제외됩니다.";}
@@ -790,15 +804,15 @@ function decisions(){
 function rBoard(){
   const ed=P().board, W=C.weeks, sp=W.filter(w=>w.sp==="확정").length;
   const soon=W.filter(w=>w.sp!=="확정"&&w.n>=C.T).slice(0,3);
-  $("boardHead").innerHTML=`<p>강사 확정 ${sp}/10, PPT Final ${W.filter(w=>w.ppt==="Final").length}/10 → ${soon.length?soon.map(w=>w.no+"주차").join("·")+" 강사 섭외를 먼저 확정해야 합니다":"전 주차 강사가 확정되었습니다. PPT 마감(D-3)을 관리합니다"}</p><div class="why">1주차 ${fmt(C.O)} ~ 10주차 ${fmt(C.END)} · 9주차 ${fmt(C.G)} 수료예배. 날짜를 바꾸면 오늘 할 일·Reminder·캘린더가 함께 이동합니다.</div>`;
+  $("boardHead").innerHTML=`<p>강사 확정 ${sp}/10, PPT Final ${W.filter(w=>w.ppt==="Final").length}/10 → ${soon.length?soon.map(w=>w.no+"주차").join("·")+" 강사 섭외를 먼저 확정해야 합니다":"전 주차 강사가 확정되었습니다. PPT 마감(D-3)을 관리합니다"}</p><div class="why">1주차 ${fmt(C.O)} ~ 10주차 ${fmt(C.END)} · 9주차 ${fmt(C.G)} 수료예배${D().cfg.holidays?" · 휴강 "+esc(D().cfg.holidays):""}. 날짜를 바꾸면 오늘 할 일·Reminder·캘린더가 함께 이동합니다.</div>`;
   $("recalcBtn").style.display=ed?"":"none";
-  $("board").innerHTML=`<thead><tr><th>주차</th><th>날짜</th><th>주제</th><th>강사</th><th>섭외</th><th>PPT<br><span style="font-weight:400">마감 D-3</span></th><th>대표기도</th>${PREP.map(p=>`<th class="c" title="${p}">${p.replace("/광고","").slice(0,3)}</th>`).join("")}<th>D+1 감사</th><th>상태</th></tr></thead><tbody>${W.map((w,i)=>{
+  $("board").innerHTML=`<thead><tr><th>주차</th><th>날짜</th><th>주제</th><th>강사</th><th>섭외</th><th>PPT<br><span style="font-weight:400">마감 D-3</span></th><th>대표기도</th><th>담당공동체</th>${PREP.map(p=>`<th class="c" title="${p}">${p.replace("/광고","").slice(0,3)}</th>`).join("")}<th>D+1 감사</th><th>상태</th></tr></thead><tbody>${W.map((w,i)=>{
     const past=w.n<C.T, cur=C.focal&&C.focal.no===w.no;
     const sel=(k,opts)=>ed?`<select data-act="wk" data-i="${i}" data-f="${k}" aria-label="${w.no}주차 ${k}">${opts.map(o=>`<option ${o===w[k]?"selected":""}>${o}</option>`).join("")}</select>`:esc(w[k]);
     const txt=(k,ph)=>ed?`<input type="text" data-act="wk" data-i="${i}" data-f="${k}" value="${esc(w[k])}" placeholder="${esc(ph)}" aria-label="${w.no}주차 ${k}">`:esc(w[k]||"-");
     const status=past?"완료":cur?(C.T===w.n?"D-Day":"이번 주"):"예정";
     return `<tr class="${cur?"cur":past?"past":""}"><td><b>${w.no}</b></td><td>${ed?`<input type="date" data-act="wk" data-i="${i}" data-f="date" value="${w.date}" aria-label="${w.no}주차 날짜">`:""}<div class="muted">${fmt(w.n)}</div></td>
-     <td style="min-width:150px">${esc(w.topic)}</td><td>${ed?`<select data-act="wkSp" data-i="${i}" aria-label="${w.no}주차 강사"><option value="">미정</option>${(D().speakers||[]).filter(s=>!s.archived||s.id===w.speakerId).map(s=>`<option value="${s.id}" ${s.id===w.speakerId?"selected":""}>${esc(s.name)}</option>`).join("")}${w.speaker&&!w.speakerId?`<option selected value="">${esc(w.speaker)} (목록 밖)</option>`:""}<option value="__new">＋ 새 강사 등록…</option></select>`:esc(w.speaker||"-")}${!w.speaker&&SP25[i]?`<div class="muted">'25 ${esc(SP25[i])}</div>`:""}</td><td>${sel("sp",["미섭외","섭외중","확정","변경"])}</td><td>${sel("ppt",["미수령","초안","Final"])}</td><td>${txt("prayer","장로님")}</td>
+     <td style="min-width:150px">${esc(w.topic)}</td><td>${ed?`<select data-act="wkSp" data-i="${i}" aria-label="${w.no}주차 강사"><option value="">미정</option>${(D().speakers||[]).filter(s=>!s.archived||s.id===w.speakerId).map(s=>`<option value="${s.id}" ${s.id===w.speakerId?"selected":""}>${esc(s.name)}</option>`).join("")}${w.speaker&&!w.speakerId?`<option selected value="">${esc(w.speaker)} (목록 밖)</option>`:""}<option value="__new">＋ 새 강사 등록…</option></select>`:esc(w.speaker||"-")}${!w.speaker&&SP25[i]?`<div class="muted">'25 ${esc(SP25[i])}</div>`:""}</td><td>${sel("sp",["미섭외","섭외중","확정","변경"])}</td><td>${sel("ppt",["미수령","초안","Final"])}</td><td>${txt("prayer","장로님")}</td><td>${ed?`<input type="text" list="commList" data-act="wk" data-i="${i}" data-f="community" value="${esc(w.community||"")}" placeholder="공동체" style="width:80px" aria-label="${w.no}주차 담당공동체">`:esc(w.community||"-")}</td>
      ${w.prep.map((v,j)=>`<td class="c"><button class="sq s${v}" data-act="prep" data-i="${i}" data-j="${j}" ${ed?"":"disabled"} title="${PREP[j]}: ${PSTAT[v]}" aria-label="${w.no}주차 ${PREP[j]} ${PSTAT[v]}">${["","…","✓","–"][v]}</button></td>`).join("")}
      <td>${sel("thanks",["미완료","진행중","완료"])}</td><td><span class="st ${past?"ok":cur?"due":"up"}">${status}</span></td></tr>`;}).join("")}</tbody>`;
 }
@@ -811,20 +825,21 @@ function rDday(){
   const done=DDAY.filter((x,i)=>lg.it[i]&&lg.it[i].done).length, p=pct(done,DDAY.length);
   const issues=DDAY.filter((x,i)=>lg.it[i]&&lg.it[i].issue).length;
   const x=C.T-w.n;
-  $("ddHead").innerHTML=`<p>${no}주차 ${fmt(w.n)} D-Day ${done}/${DDAY.length} 완료${issues?` · 이슈 ${issues}건`:""} → ${x<0?`D-${-x}: 담당자 배정과 T-120 집결(13:30)을 사전 공유합니다`:x===0?"시점 순서대로 체크하고, 이슈는 발생 즉시 Owner를 지정합니다":done<DDAY.length?"미완료 항목과 D+1·D+2 후속을 닫아야 합니다":"이번 주차 현장 운영이 모두 닫혔습니다"}</p><div class="why">${esc(w.topic)} · 강사 ${esc(w.speaker||"미확정")} · 대표기도 ${esc(w.prayer||"미정")}${ed?"":" · 조회 전용 계정"}</div>`;
+  $("ddHead").innerHTML=`<p>${no}주차 ${fmt(w.n)} D-Day ${done}/${DDAY.length} 완료${issues?` · 이슈 ${issues}건`:""} → ${x<0?`D-${-x}: 담당자 배정과 집결(${gatherT()})을 사전 공유합니다`:x===0?"시점 순서대로 체크하고, 이슈는 발생 즉시 Owner를 지정합니다":done<DDAY.length?"미완료 항목과 D+1·D+2 후속을 닫아야 합니다":"이번 주차 현장 운영이 모두 닫혔습니다"}</p><div class="why">${esc(w.topic)} · 강사 ${esc(w.speaker||"미확정")} · 대표기도 ${esc(w.prayer||"미정")}${w.community?" ("+esc(w.community)+")":""}${ed?"":" · 조회 전용 계정"}</div>`;
   $("ddTitle").textContent=`${no}주차 D-Day 체크 (14개 시점)`;
   $("ddSub").textContent=`${fmtL(w.n)} · 시작 ${D().cfg.time.split("~")[0]} 기준 시각`;
   const Cc=2*Math.PI*38;
   $("ddRing").innerHTML=`<circle cx="48" cy="48" r="38" fill="none" stroke="var(--soft)" stroke-width="10"/><circle cx="48" cy="48" r="38" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${Cc*p/100} ${Cc}" opacity="${p?1:0}" transform="rotate(-90 48 48)"/><text x="48" y="55" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink)">${p}%</text>`;
-  $("ddList").innerHTML=DDAY.map((d,i)=>{const it=lg.it[i]||{};return `<div class="ddi"><div class="tp">${d[0]}<small>${DDCLOCK[d[0]]}</small></div>
+  $("ddList").innerHTML=DDAY.map((d,i)=>{const it=lg.it[i]||{};return `<div class="ddi"><div class="tp">${ddClamped(d[0])?"집결":d[0]}<small>${ddClock(d[0])}</small></div>
     <button class="cb${it.done?" on":""}" data-act="dd" data-i="${i}" ${ed?"":"disabled"} aria-pressed="${!!it.done}" aria-label="${d[1]} 완료">${it.done?"✓":""}</button>
     <div><div class="tt" style="font-weight:600">${d[1]} · ${esc(d[2])}</div><div class="muted">${esc(d[3])}</div></div>
     ${ed||it.issue?`<div class="issue"><input type="text" data-act="ddIssue" data-i="${i}" value="${esc(it.issue||"")}" placeholder="이슈·조치 (발생 시)" ${ed?"":"readonly"} aria-label="${d[1]} 이슈"></div>`:""}</div>`;}).join("");
-  const ros=[["14:30~15:20",50,"교육준비 및 기도회 (테이블·AV·간식)",1],["15:20~15:30",10,"Welcome — 모든 스텝"],["15:30~15:40",10,"찬양"],["15:40~15:45",5,`기도 및 축복메시지 — ${w.prayer||"주별 장로님"}`]];
+  const g0=gatherM(),w0=startM()-10;
+  const ros=[[`${hhmm(g0)}~${hhmm(w0)}`,w0-g0,"교육준비 및 기도회 (테이블·AV·간식)",1],["15:20~15:30",10,"Welcome — 모든 스텝"],["15:30~15:40",10,"찬양"],["15:40~15:45",5,`기도 및 축복메시지 — ${w.prayer||"주별 장로님"}${w.community?" ("+w.community+" 공동체)":""}`]];
   if(no===1)ros.push(["15:45~16:00",15,"오리엔테이션 — 팀장 또는 총무"],["16:00~17:00",60,`${no}주차 강의 — ${w.speaker||"강사 미확정"}`]);
   else ros.push(["15:45~17:00",75,`${no}주차 강의 — ${w.speaker||"강사 미확정"}`]);
   ros.push(["17:00~17:10",10,"휴식 · 간식 나눔"],["17:10~17:20",10,"조별 강의주제 나눔 — 조장"],["17:20~17:25",5,"광고 — 팀장"],["17:25~17:30",5,"마침기도 및 축도 — 담당교역자"]);
-  $("ros").innerHTML=ros.map(r=>`<div class="tm ${r[3]?"pre":""}">${r[0]}</div><div class="mn">${r[1]}분</div><div class="${r[3]?"pre":""}">${esc(r[2])}</div>`).join("")+`<div class="tm"><b>교육 시간</b></div><div class="mn"><b>120분</b></div><div class="muted">15:30~17:30 (사전 준비 50분 별도)</div>`;
+  $("ros").innerHTML=ros.map(r=>`<div class="tm ${r[3]?"pre":""}">${r[0]}</div><div class="mn">${r[1]}분</div><div class="${r[3]?"pre":""}">${esc(r[2])}</div>`).join("")+`<div class="tm"><b>교육 시간</b></div><div class="mn"><b>120분</b></div><div class="muted">${esc(D().cfg.time)} (사전 준비 ${w0-g0}분 별도)</div>`;
   $("debrief").innerHTML=[["keep","Keep"],["problem","Problem"],["care","Care"],["next","Next"]].map(([k,l])=>`<label>${l}<textarea data-act="db" data-k="${k}" ${ed?"":"readonly"} placeholder="${k==="care"?"이름 없이 신호·조치만":""}">${esc(lg.db[k]||"")}</textarea></label>`).join("");
 }
 
@@ -919,10 +934,19 @@ function rCal(){
   $("msTable").innerHTML=`<thead><tr><th>단계</th><th>기간</th><th>핵심업무</th><th>Owner</th><th>상태</th></tr></thead><tbody>${rows.map(r=>`<tr class="${C.T>=r.s&&C.T<=r.e?"cur":""}"><td style="white-space:nowrap"><b>${r.m.ph}</b> <span class="muted">${r.m.k}</span></td><td style="white-space:nowrap">${fmt(r.s)}${r.s!==r.e?"~"+fmt(r.e):""}</td><td>${esc(r.m.t)}<div class="muted">완료기준: ${esc(r.m.done)}</div></td><td>${esc(r.m.o)}</td>
     <td>${ed?`<select data-act="ms" data-id="${r.m.id}" aria-label="${r.m.ph} 상태">${MSTAT.map(o=>`<option ${o===r.st?"selected":""}>${o}</option>`).join("")}</select>`:r.st}${r.over?` <span class="st over">지연</span>`:""}</td></tr>`).join("")}</tbody>`;
   const pr=D().prep;
-  $("prepList").innerHTML=PREPLAN.map((t,i)=>`<label class="pchk"><input type="checkbox" data-act="prepPlan" data-i="${i}" ${pr[i]?"checked":""} ${ed?"":"disabled"}><span>${esc(t)}</span><span class="muted">${pr[i]?"완료":""}</span></label>`).join("")+`<div class="muted" style="padding-top:8px">${Object.values(pr).filter(Boolean).length}/${PREPLAN.length} 완료</div>`;
-  const B=D().budget,tp=B.reduce((s,x)=>s+(+x.plan||0),0),ts=B.reduce((s,x)=>s+(+x.spend||0),0);
-  $("budget").innerHTML=`<thead><tr><th>구분</th><th>예산/수입(원)</th><th>지출(원)</th><th>상태</th></tr></thead><tbody>${B.map((x,i)=>`<tr><td>${x.b}</td><td>${ed?`<input type="number" min="0" step="1000" data-act="bud" data-i="${i}" data-f="plan" value="${x.plan||""}" style="width:110px" aria-label="${x.b} 예산">`:(+x.plan).toLocaleString()}</td><td>${ed?`<input type="number" min="0" step="1000" data-act="bud" data-i="${i}" data-f="spend" value="${x.spend||""}" style="width:110px" aria-label="${x.b} 지출">`:(+x.spend).toLocaleString()}</td><td>${ed?`<select data-act="bud" data-i="${i}" data-f="st">${["미집행","진행중","집행완료"].map(o=>`<option ${o===x.st?"selected":""}>${o}</option>`).join("")}</select>`:x.st}</td></tr>`).join("")}
-   <tr><td><b>합계</b></td><td><b>${tp.toLocaleString()}</b></td><td><b>${ts.toLocaleString()}</b></td><td><b>집행률 ${pct(ts,tp)}%</b></td></tr></tbody>`;
+  const pm=D().prepMemo||{};
+  $("prepList").innerHTML=PREPLAN.map((t,i)=>`<label class="pchk"><input type="checkbox" data-act="prepPlan" data-i="${i}" ${pr[i]?"checked":""} ${ed?"":"disabled"}><span>${esc(t)}${ed?`<input type="text" data-act="prepMemo" data-i="${i}" value="${esc(pm[i]||"")}" maxlength="60" placeholder="메모 (예: 인쇄소·수령처)" aria-label="${esc(t)} 메모" style="display:block;width:100%;margin-top:4px;font-size:12px">`:pm[i]?`<div class="muted">${esc(pm[i])}</div>`:""}</span><span class="muted">${pr[i]?"완료":""}</span></label>`).join("")+`<div class="muted" style="padding-top:8px">${Object.values(pr).filter(Boolean).length}/${PREPLAN.length} 완료</div>`;
+  // [v4.2] 원본 예산 시트와 같이 수입(교회예산·회비)과 지출을 나눠 합계·잔액·집행률 계산. 회비 = 회비 × 인원 (자동)
+  const B=D().budget,fee=+D().cfg.fee||0,lv=D().roster.filter(t=>!t.archived&&(t.status==="Active"||t.status==="Registered")),paidN=lv.filter(t=>t.paid).length;
+  const rowsB=B.map((x,i)=>{const inc=INCOME.includes(x.b),auto=x.b==="회비";return {...x,i,inc,auto,plan:auto?fee*lv.length:+x.plan||0,spend:auto?fee*paidN:+x.spend||0};});
+  const sum=(a,k)=>a.reduce((s,x)=>s+x[k],0),inc=rowsB.filter(x=>x.inc),exp=rowsB.filter(x=>!x.inc);
+  const ip=sum(inc,"plan"),ia=sum(inc,"spend"),ep=sum(exp,"plan"),ea=sum(exp,"spend"),W=n=>n.toLocaleString();
+  const num=(x,f)=>ed&&!x.auto?`<input type="number" min="0" step="1000" data-act="bud" data-i="${x.i}" data-f="${f}" value="${x[f]||""}" style="width:110px" aria-label="${x.b} ${f==="plan"?"계획":"실적"}">`:W(x[f]);
+  const line=x=>`<tr><td style="white-space:nowrap">${x.b}${x.auto?`<div class="muted">${W(fee)}원×${lv.length}명 · 납부 ${paidN}</div>`:""}</td><td><span class="pill ${x.inc?"fLikely":"None"}">${x.inc?"수입":"지출"}</span></td><td>${num(x,"plan")}</td><td>${num(x,"spend")}</td><td>${ed&&!x.auto?`<select data-act="bud" data-i="${x.i}" data-f="st">${["미집행","진행중","집행완료"].map(o=>`<option ${o===x.st?"selected":""}>${o}</option>`).join("")}</select>`:x.auto?(paidN>=lv.length&&lv.length?"납부완료":"수납중"):x.st}</td></tr>`;
+  $("budget").innerHTML=`<thead><tr><th>구분</th><th>유형</th><th>계획(원)</th><th>실적(원)</th><th>상태</th></tr></thead><tbody>${inc.map(line).join("")}
+   <tr><td style="white-space:nowrap"><b>수입 합계</b></td><td></td><td><b>${W(ip)}</b></td><td><b>${W(ia)}</b></td><td>수납률 ${pct(ia,ip)}%</td></tr>${exp.map(line).join("")}
+   <tr><td style="white-space:nowrap"><b>지출 합계</b></td><td></td><td><b>${W(ep)}</b></td><td><b>${W(ea)}</b></td><td><b>집행률 ${pct(ea,ep)}%</b></td></tr>
+   <tr><td style="white-space:nowrap"><b>잔액</b> <span class="muted">(수입−지출)</span></td><td></td><td><b style="color:${ip-ep<0?"var(--red)":"inherit"}">${W(ip-ep)}</b></td><td><b style="color:${ia-ea<0?"var(--red)":"inherit"}">${W(ia-ea)}</b></td><td>${ip-ep<0?`<span class="st over">계획 적자</span>`:""}</td></tr></tbody>`;
 }
 
 /* ================= MANUAL ================= */
@@ -934,7 +958,7 @@ function rManual(){
   $("duties").innerHTML=`<thead><tr><th>내용</th><th>인원</th><th>역할</th></tr></thead><tbody>${DUTIES.map(r=>`<tr><td>${r[0]}</td><td style="white-space:nowrap">${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</tbody>`;
   $("tplLib").innerHTML=Object.entries(TPL).map(([k,t])=>`<div class="tpl"><div class="th"><b>${esc(t.n)}</b><button class="btn" data-act="tpl" data-k="${k}">문구 열기</button></div></div>`).join("");
   {const tv=teamsView(),st=staffList().filter(s=>s.active),nm=r=>st.filter(s=>s.role===r).map(s=>s.name).join(", ")||"-";
-   $("staff").innerHTML=`<table class="dt"><tbody><tr><td>담당교역자</td><td>${esc(nm("Pastor"))}</td></tr><tr><td>담당장로</td><td>(주차 Board 대표기도 참고)</td></tr><tr><td>팀장</td><td>${esc(nm("TeamLeader"))}</td></tr><tr><td>총무</td><td>${esc(nm("Secretary"))}</td></tr><tr><td>테이블리더</td><td>${esc(TABLES.map(t=>t+" "+(LEADER[t]||"-")).join(" · "))}</td></tr>${TEAMS_ALL.map(k=>`<tr><td>${k}</td><td>${esc(tv[k].join(", "))}${cfgEd?` <input type="text" data-act="team" data-k="${k}" value="${esc(d.teams[k]||"")}" placeholder="계정 없는 인원" style="width:140px">`:d.teams[k]?" "+esc(d.teams[k]):""}${!tv[k].length&&!d.teams[k]&&!cfgEd?"미배정":""}</td></tr>`).join("")}</tbody></table><p class="muted" style="margin:8px 0 0">계정·팀 배정은 「명단 관리 › 운영진」에서 합니다.</p>`;}
+   $("staff").innerHTML=`<table class="dt"><tbody><tr><td>담당교역자</td><td>${esc(nm("Pastor"))}</td></tr><tr><td>담당장로</td><td>${esc(nm("Elder"))}</td></tr><tr><td>팀장</td><td>${esc(nm("TeamLeader"))}</td></tr><tr><td>총무</td><td>${esc(nm("Secretary"))}</td></tr><tr><td>테이블리더</td><td>${esc(TABLES.map(t=>t+" "+(LEADER[t]||"-")).join(" · "))}</td></tr>${TEAMS_ALL.map(k=>`<tr><td>${k}</td><td>${esc(tv[k].join(", "))}${cfgEd?` <input type="text" data-act="team" data-k="${k}" value="${esc(d.teams[k]||"")}" placeholder="계정 없는 인원" style="width:140px">`:d.teams[k]?" "+esc(d.teams[k]):""}${!tv[k].length&&!d.teams[k]&&!cfgEd?"미배정":""}</td></tr>`).join("")}</tbody></table><p class="muted" style="margin:8px 0 0">계정·팀 배정은 「명단 관리 › 운영진」에서 합니다.</p>`;}
   const c=d.cfg;
   $("setBox").style.display=cfgEd?"":"none";
   $("settings").innerHTML=`
@@ -942,6 +966,9 @@ function rManual(){
    <label>개강일 (1주차)<input type="date" data-act="cfg" data-k="open" value="${c.open}"></label>
    <label>교육장<input data-act="cfg" data-k="venue" value="${esc(c.venue)}"></label>
    <label>교육시간<input data-act="cfg" data-k="time" value="${esc(c.time)}"></label>
+   <label>스텝 집결시간<input type="time" data-act="cfg" data-k="gather" value="${esc(c.gather||"14:30")}"></label>
+   <label>회비 (원)<input type="number" min="0" step="10000" data-act="cfg" data-k="fee" value="${+c.fee||0}"></label>
+   <label class="w2">휴강일 (일요일, 쉼표로 구분)<input data-act="cfg" data-k="holidays" value="${esc(c.holidays||"")}" placeholder="예: 2026-11-29"></label>
    <label>순장실습 필요횟수<input type="number" min="0" max="10" data-act="crit" data-k="sil" value="${c.crit.sil}"></label>
    <label>순장공부 필요횟수<input type="number" min="0" max="10" data-act="crit" data-k="gong" value="${c.crit.gong}"></label>
    <label>아웃리치 필요<input type="number" min="0" max="5" data-act="crit" data-k="out" value="${c.crit.out}"></label>
@@ -980,7 +1007,7 @@ function saveTrainee(rec,silent){
     audit("교육생 비고",r.name);api("tSave",{rec:{id:r.id,note:r.note},ver});render();if(!silent)undoBar(`${r.name} 비고 저장`,()=>saveTrainee(prev,true));return true;}
   const name=(rec.name||"").trim(); if(!name){toast("이름을 입력하세요.");return false;}
   if(d.roster.some(x=>x.name===name&&!x.archived&&x.id!==rec.id)){toast("같은 이름의 교육생이 있습니다. 구분 표기(예: 김하늘B)를 붙여 주세요.");return false;}
-  const fields={name,table:rec.table,status:rec.status,community:(rec.community||"").trim(),source:rec.source||"",note:(rec.note||"").trim(),updated:new Date().toISOString().slice(0,16).replace("T"," "),by:me().name};
+  const fields={name,table:rec.table,status:rec.status,community:(rec.community||"").trim(),source:rec.source||"",note:(rec.note||"").trim(),paid:rec.paid===true||rec.paid==="on",updated:new Date().toISOString().slice(0,16).replace("T"," "),by:me().name};
   if(!rec.id){const id="L"+Date.now().toString(36);d.roster.push({id,archived:false,ver:1,...fields});audit("교육생 등록",`${name} ${fields.table}`);
     api("tSave",{rec:{...fields}});ADM.sel=id;ADM.draft=null;render();if(!silent)ADM.pendingName=name;undoBar(`${name} 등록`,()=>archiveTrainee(id,true,true,name));return true;}
   const r=d.roster.find(x=>x.id===rec.id);if(!r){toast("교육생을 찾을 수 없습니다.");return false;}
@@ -1099,8 +1126,8 @@ function admTrainee(){
       ${tabs.length>1?`<select data-adm="tf" aria-label="Table"><option value="all">전체 Table</option>${tabs.map(t=>`<option ${ADM.tf===t?"selected":""}>${t}</option>`).join("")}</select>`:""}
       <select data-adm="sf" aria-label="등록상태"><option value="live" ${ADM.sf==="live"?"selected":""}>등록·수강 중</option><option value="all" ${ADM.sf==="all"?"selected":""}>전체 상태</option>${STATUS.map(s=>`<option value="${s}" ${ADM.sf===s?"selected":""}>${ST_KO[s]}</option>`).join("")}</select>
       ${p.tEdit?`<button class="btn pri" data-adm="newT">＋ 교육생 추가</button>`:""}</div>
-    <div class="tscroll"><table class="dt"><thead><tr><th>이름</th><th>Table</th><th>상태</th><th>공동체</th><th>비고</th></tr></thead><tbody>${list.map(t=>`<tr class="pick${ADM.sel===t.id?" cur":""}" data-adm="selT" data-id="${t.id}" tabindex="0"><td><b>${esc(t.name)}</b></td><td>${t.table}</td><td><span class="pill ${live(t)?"fLikely":"None"}">${ST_KO[t.status]||t.status}</span></td><td>${esc(t.community||"")}</td><td class="muted">${esc((t.note||"").slice(0,24))}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">조건에 맞는 교육생이 없습니다.</td></tr>`}</tbody></table></div>
-    <div class="muted" style="padding-top:8px">${list.length}명 표시</div></div>
+    <div class="tscroll"><table class="dt"><thead><tr><th>이름</th><th>Table</th><th>상태</th><th>회비</th><th>공동체</th><th>비고</th></tr></thead><tbody>${list.map(t=>`<tr class="pick${ADM.sel===t.id?" cur":""}" data-adm="selT" data-id="${t.id}" tabindex="0"><td><b>${esc(t.name)}</b></td><td>${t.table}</td><td><span class="pill ${live(t)?"fLikely":"None"}">${ST_KO[t.status]||t.status}</span></td><td class="c">${t.paid?"✓":"<span class=\"muted\">–</span>"}</td><td>${esc(t.community||"")}</td><td class="muted">${esc((t.note||"").slice(0,24))}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">조건에 맞는 교육생이 없습니다.</td></tr>`}</tbody></table></div>
+    <div class="muted" style="padding-top:8px">${list.length}명 표시 · 회비 납부 ${list.filter(t=>t.paid).length}명</div></div>
     <div class="box" id="admEd"></div></div>`;
   const ed=$("admEd"),sel=ADM.sel==="new"?{id:"",name:"",table:ADM.tf!=="all"?ADM.tf:tabs[0],status:"Registered",community:"",source:"",note:""}:d.roster.find(x=>x.id===ADM.sel&&!x.archived);
   if(!sel){ed.innerHTML=`<h2>교육생 정보</h2><p class="empty">목록에서 교육생을 선택하세요.${p.tEdit?" 새 교육생은 「＋ 교육생 추가」를 누릅니다.":""}</p>`;return;}
@@ -1111,6 +1138,7 @@ function admTrainee(){
     <label>Table<select name="table" ${dis}>${TABLES.map(t=>`<option ${r.table===t?"selected":""}>${t}</option>`).join("")}</select></label>
     <label>등록상태<select name="status" ${dis}>${STATUS.map(s=>`<option value="${s}" ${r.status===s?"selected":""}>${ST_KO[s]}</option>`).join("")}</select></label>
     <label>공동체<input name="community" value="${esc(r.community||"")}" maxlength="30" ${dis}></label>
+    <label class="w2 inl"><input type="checkbox" name="paid" ${r.paid?"checked":""} ${dis}> 회비 납부 (${(+D().cfg.fee||0).toLocaleString()}원)</label>
     <label>신청경로<select name="source" ${dis}><option value="">-</option>${SOURCES.map(s=>`<option ${r.source===s?"selected":""}>${s}</option>`).join("")}</select></label>
     <label class="w2">비고 (연락·후속조치에 필요한 최소정보)<textarea name="note" maxlength="80" ${full||p.tNote?"":"disabled"}>${esc(r.note||"")}</textarea></label>
     <input type="hidden" name="id" value="${sel.id}"></form>
@@ -1150,7 +1178,7 @@ function admSpeaker(){
     p.spEdit?`<button class="btn pri" data-adm="saveS">저장</button><button class="btn" data-adm="cancel">취소</button>${sel.id?`<button class="btn warn" data-adm="archS" data-id="${sel.id}" style="margin-left:auto">보관</button>`:""}`:`<span class="muted">조회 전용 계정입니다.</span>`);
 }
 function admStaff(){
-  const p=P(),list=staffList().slice().sort((a,b)=>["TeamLeader","Secretary","Pastor","TableLeader"].indexOf(a.role)-["TeamLeader","Secretary","Pastor","TableLeader"].indexOf(b.role)||(a.table||"").localeCompare(b.table||""));
+  const p=P(),list=staffList().slice().sort((a,b)=>["TeamLeader","Secretary","Pastor","Elder","TableLeader"].indexOf(a.role)-["TeamLeader","Secretary","Pastor","Elder","TableLeader"].indexOf(b.role)||(a.table||"").localeCompare(b.table||""));
   const tv=teamsView(),extra=D().teams||{};
   $("admBody").innerHTML=`<div class="admgrid"><div class="box"><div class="admbar"><h2 style="margin:0;flex:1">운영진 계정</h2>${p.stEdit?`<button class="btn pri" data-adm="newSt">＋ 운영진 등록</button>`:""}</div>
     <p class="sub">${p.stEdit?"여기 등록된 이메일만 인증코드 로그인이 됩니다. 사용을 끄면 그 계정의 로그인도 즉시 끊깁니다.":"운영진 구성입니다. 계정 관리는 팀장이 합니다."}</p>
@@ -1165,7 +1193,7 @@ function admStaff(){
   ed.innerHTML=editorShell(sel.key?esc(sel.name):"새 운영진",`<form id="admForm" data-kind="st" class="form" style="grid-template-columns:1fr 1fr" novalidate>
     <label class="w2">로그인 이메일 (Gmail 등 개인 메일 가능)<input name="email" type="email" value="${esc(r.email)}" maxlength="80"></label>
     <label>이름<input name="name" value="${esc(r.name)}" maxlength="20"></label>
-    <label>역할<select name="role">${["TeamLeader","Secretary","TableLeader","Pastor"].map(x=>`<option value="${x}" ${r.role===x?"selected":""}>${ROLE_KO[x]}</option>`).join("")}</select></label>
+    <label>역할<select name="role">${["TeamLeader","Secretary","Pastor","Elder","TableLeader"].map(x=>`<option value="${x}" ${r.role===x?"selected":""}>${ROLE_KO[x]}</option>`).join("")}</select></label>
     <label>담당 Table (테이블리더)<select name="table">${TABLES.map(t=>`<option ${r.table===t?"selected":""}>${t}</option>`).join("")}</select></label>
     <label>소속 팀<select name="team"><option value="">-</option>${TEAMS_ALL.map(t=>`<option ${r.team===t?"selected":""}>${t}</option>`).join("")}</select></label>
     <label class="w2 inl"><input type="checkbox" name="active" ${r.active?"checked":""}> 사용 (끄면 로그인 불가)</label>
@@ -1190,7 +1218,7 @@ function admArchive(){
 
 /* ---------- admin events ---------- */
 function formObj(){const f=$("admForm");if(!f)return null;const o={kind:f.dataset.kind};new FormData(f).forEach((v,k)=>{if(k==="wk")(o.weeks=o.weeks||[]).push(+v);else o[k]=v;});
-  if(o.kind==="s"&&!o.weeks)o.weeks=[];if(o.kind==="st")o.active=!!f.querySelector("[name=active]").checked;return o;}
+  if(o.kind==="s"&&!o.weeks)o.weeks=[];if(o.kind==="st")o.active=!!f.querySelector("[name=active]").checked;if(o.kind==="t"&&f.querySelector("[name=paid]"))o.paid=!!f.querySelector("[name=paid]").checked;return o;}
 document.addEventListener("click",e=>{
   const u=e.target.closest("#undo button");if(u){const b=$("undo");b.classList.remove("on");if(b._fn){const f=b._fn;b._fn=null;f();toast("되돌렸습니다.");}return;}
   const el=e.target.closest("[data-adm]");if(!el||el.tagName==="INPUT"||el.tagName==="SELECT")return;
@@ -1266,7 +1294,7 @@ document.body.addEventListener("click",e=>{
    case "closeP":S.sel=null;rPerson();save();break;
    case "inputFor":S.sel=el.dataset.n;go("care");setTimeout(()=>$("inputBox").scrollIntoView({block:"start"}),50);break;
    case "prep":{if(el.disabled)return;const w=touch(+el.dataset.i),j=+el.dataset.j;w.prep[j]=(w.prep[j]+1)%4;audit("준비물",`${w.no}주차 ${PREP[j]} → ${PSTAT[w.prep[j]]}`);api("prep",{i:+el.dataset.i,j,v:w.prep[j]});render();break;}
-   case "recalcDates":if(confirm(`개강일 ${d.cfg.open} 기준으로 10주 날짜를 7일 간격으로 다시 계산합니다.`)){const o=d2n(d.cfg.open);d.weeks.forEach((w,i)=>w.date=n2s(o+7*i));audit("날짜 재계산",d.cfg.open);api("recalc",{});render();}break;
+   case "recalcDates":if(confirm(`개강일 ${d.cfg.open} 기준으로 10주 날짜를 7일 간격으로 다시 계산합니다.${d.cfg.holidays?" (휴강일 "+d.cfg.holidays+" 제외)":""}`)){const ds=weekDates(d.cfg.open,d.cfg.holidays);d.weeks.forEach((w,i)=>w.date=ds[i]);audit("날짜 재계산",d.cfg.open);api("recalc",{});render();}break;
    case "ddw":S.ddW=+el.dataset.w;render();break;
    case "dd":{if(el.disabled)return;const no=S.ddW||(C.focal?C.focal.no:10),lg=ddLog(no),i=+el.dataset.i;lg.it[i]=lg.it[i]||{};lg.it[i].done=!lg.it[i].done;audit("D-Day 체크",`${no}주차 ${DDAY[i][1]} → ${lg.it[i].done?"완료":"해제"}`);api("dd",{no,i,done:lg.it[i].done});render();break;}
    case "careF":S.careF=el.dataset.k;render();break;
@@ -1286,12 +1314,16 @@ document.body.addEventListener("change",e=>{
   switch(a){
    case "wk":{const w=touch(+el.dataset.i),f=el.dataset.f;if(f==="date"&&!el.value)return;w[f]=el.value.trim?el.value.trim():el.value;audit("주차 Board",`${w.no}주차 ${f} → ${w[f]}`);api("wk",{i:+el.dataset.i,f,v:w[f]});render();break;}
    case "ms":d.ms[el.dataset.id]=el.value;api("ms",{id:el.dataset.id,st:el.value});audit("마일스톤",`${el.dataset.id} → ${el.value}`);render();break;
+   case "prepMemo":(d.prepMemo=d.prepMemo||{})[el.dataset.i]=el.value.trim();api("prepPlan",{i:+el.dataset.i,memo:el.value.trim()});audit("개강 준비 메모",PREPLAN[+el.dataset.i]);save();break;
    case "prepPlan":d.prep[el.dataset.i]=el.checked;api("prepPlan",{i:+el.dataset.i,v:el.checked});audit("개강 준비",`${PREPLAN[+el.dataset.i]} → ${el.checked?"완료":"해제"}`);render();break;
    case "bud":{const x=d.budget[+el.dataset.i];x[el.dataset.f]=el.dataset.f==="st"?el.value:Math.max(0,+el.value||0);api("bud",{i:+el.dataset.i,f:el.dataset.f,v:x[el.dataset.f]});render();break;}
    case "official":d.official[el.dataset.n]=el.value;api("official",{name:el.dataset.n,v:el.value});audit("공식 판정",`${el.dataset.n} → ${el.value}`);save();toast(`${el.dataset.n} 공식 판정: ${el.value}`);break;
    case "team":d.teams[el.dataset.k]=el.value.trim();api("team",{k:el.dataset.k,v:d.teams[el.dataset.k]});save();break;
-   case "cfg":{const k=el.dataset.k;if(k==="open"){if(!el.value)return;const o=d2n(el.value);if(confirm(`개강일을 ${fmtL(o)}로 바꾸고 10주 날짜를 다시 계산할까요?`)){d.cfg.open=el.value;d.weeks.forEach((w,i)=>w.date=n2s(o+7*i));audit("개강일 변경",el.value);api("cfg",{k:"open",v:el.value});}render();return;}
-     d.cfg[k]=k==="excAbs"?el.value==="true":el.value;api("cfg",{k,v:el.value});audit("설정",`${k} → ${el.value}`);render();break;}
+   case "cfg":{const k=el.dataset.k;if(k==="open"){if(!el.value)return;const o=d2n(el.value);if(confirm(`개강일을 ${fmtL(o)}로 바꾸고 10주 날짜를 다시 계산할까요?`)){d.cfg.open=el.value;const ds=weekDates(el.value,d.cfg.holidays);d.weeks.forEach((w,i)=>w.date=ds[i]);audit("개강일 변경",el.value);api("cfg",{k:"open",v:el.value});}render();return;}
+     if(k==="holidays"){const v=el.value.split(/[\s,]+/).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).join(", ");if(!confirm(v?`휴강일 ${v}을(를) 빼고 10주 날짜를 다시 계산할까요?`:"휴강일을 비우고 10주 날짜를 다시 계산할까요?")){render();return;}
+       d.cfg.holidays=v;const ds=weekDates(d.cfg.open,v);d.weeks.forEach((w,i)=>w.date=ds[i]);api("cfg",{k,v});audit("휴강일",v||"없음");render();return;}
+     if(k==="gather"&&!/^\d{2}:\d{2}$/.test(el.value)){toast("집결시간은 14:30 형식입니다.");render();return;}
+     d.cfg[k]=k==="excAbs"?el.value==="true":k==="fee"?Math.max(0,+el.value||0):el.value;api("cfg",{k,v:el.value});audit("설정",`${k} → ${el.value}`);render();break;}
    case "crit":d.cfg.crit[el.dataset.k]=Math.max(0,+el.value||0);api("crit",{k:el.dataset.k,v:d.cfg.crit[el.dataset.k]});audit("수료 기준",`${el.dataset.k} → ${el.value}`);render();break;
    case "ddIssue":{const no=S.ddW||(C.focal?C.focal.no:10);api("ddIssue",{no,i:+el.dataset.i,issue:el.value});break;}
    case "db":{const no=S.ddW||(C.focal?C.focal.no:10);api("db",{no,k:el.dataset.k,v:el.value});break;}
